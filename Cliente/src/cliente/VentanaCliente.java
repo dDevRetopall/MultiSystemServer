@@ -68,12 +68,14 @@ public class VentanaCliente extends JFrame{
 		p1.add(b);
 		p2.add(scroll);
 		p3.add(listaUsuarios);
+		v = new VentanaUsuarios();
+		
 		listaUsuarios.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				v = new VentanaUsuarios();
+				v.setVisible(true);
 			}
 
 		});
@@ -81,7 +83,7 @@ public class VentanaCliente extends JFrame{
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("ss");
+				
 				if(b2.isEnabled()){
 					super.mouseClicked(e);
 					Constantes.HOST=te3.getText();

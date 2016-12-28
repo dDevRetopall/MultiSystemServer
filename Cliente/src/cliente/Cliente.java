@@ -51,21 +51,25 @@ public class Cliente {
 					InputStream is;
 					
 						try {
+							
 							is = s.getInputStream();
 							ObjectInputStream ois = new ObjectInputStream(is);
 							try {
 							Object o = ois.readObject();
 							if(o instanceof Mensaje){
+								System.out.println("Detectado un mensaje");
 								Mensaje m = (Mensaje)o;
 								vc.getTa().setText(vc.getTa().getText()+m.getMensaje());
 							}else if(o instanceof Usuarios){
-								ArrayList usuarios = (ArrayList)o;
+								System.out.println("Detectado un usuario");
+								ArrayList usuarios = (Usuarios)o;
 								String usuarios1="";
 								for(int i =0;i<usuarios.size();i++){
 									usuarios1=usuarios1+usuarios.get(i)+"\n";
-									
+									System.out.println(usuarios);
 								}
-								vc.getV().getTa().setText(usuarios1);
+								System.out.println(usuarios.get(0));
+								vc.getV().getTa().setText(vc.getV().getTa().getText()+usuarios1);
 							}
 						} catch (ClassNotFoundException e1) {
 							connected=false;

@@ -21,13 +21,13 @@ public class MainServidor {
 	static Socket s;
 	static Thread t2;
 	static Thread t3;
-
+	static Usuarios u;
 	static VentanaServidor vs;
 	static ServerSocket sc;
 	static ArrayList<Cliente> clientes = new ArrayList<>();
 
 	public static void main(String[] args) {
-		Usuarios u = new Usuarios();
+		u = new Usuarios();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
@@ -61,10 +61,10 @@ public class MainServidor {
 					try {
 						
 						s = sc.accept();
-						//Cliente c = new Cliente(s) ;
-						clientes.add(new Cliente(s));
-						//u.add(c.getUsuario());
-						//enviarMensajeATodos(u);
+						Cliente c = new Cliente(s) ;
+						clientes.add(c);
+						
+					
 						
 						
 					} catch (IOException e) {
@@ -83,8 +83,10 @@ public class MainServidor {
 	public static void enviarMensajeATodos(Mensaje m) {
 		SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
 		Date now = new Date();
-		vs.getTa().setText(vs.getTa().getText() + m.getMensaje() + "\n");
+		
 		String strDate = sdfDate.format(now);
+		vs.getTa().setText(vs.getTa().getText()+strDate+"  " + m.getMensaje() + "\n");
+		//formatea el mensaje
 		Mensaje m2 = new Mensaje(strDate + "  " + m.getMensaje() + "\n");
 		Loader.mensajes.add(m2);
 		for (Cliente c : clientes) {
@@ -93,6 +95,7 @@ public class MainServidor {
 		}
 	}
 	public static void enviarMensajeATodos(Usuarios u) {
+		System.out.println(u.get(0));
 		for (Cliente c : clientes) {
 			c.enviarMensaje(u);
 			
@@ -108,6 +111,8 @@ public class MainServidor {
 			if (c.getUsuario().startsWith(username)) {
 				c.kick();
 				clientes.remove(c);
+				u.remove(c.getUsuario());
+				enviarMensajeATodos(u);
 				c2++;
 			}
 		}

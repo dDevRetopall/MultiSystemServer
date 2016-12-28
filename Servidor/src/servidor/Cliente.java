@@ -40,7 +40,8 @@ public class Cliente {
 						}else if(o instanceof Usuario){
 							Usuario u =(Usuario)o;
 							usuario= u.getUsername();
-							System.out.println(usuario);
+							MainServidor.u.add(usuario);
+							MainServidor.enviarMensajeATodos(MainServidor.u);
 						}
 						
 					} catch (IOException e) {
