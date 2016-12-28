@@ -9,9 +9,12 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.swing.JPanel;
 
+import comun.Comandos;
 import comun.Constantes;
 import comun.Mensaje;
 import comun.Usuario;
@@ -62,14 +65,24 @@ public class Cliente {
 								vc.getTa().setText(vc.getTa().getText()+m.getMensaje());
 							}else if(o instanceof Usuarios){
 								System.out.println("Detectado un usuario");
-								ArrayList usuarios = (Usuarios)o;
+								HashSet usuarios = (Usuarios)o;
 								String usuarios1="";
-								for(int i =0;i<usuarios.size();i++){
-									usuarios1=usuarios1+usuarios.get(i)+"\n";
-									System.out.println(usuarios);
+								Iterator i = usuarios.iterator();
+								if(i.hasNext()){
+									usuarios1=usuarios1+i.next()+"\n";
 								}
-								System.out.println(usuarios.get(0));
-								vc.getV().getTa().setText(vc.getV().getTa().getText()+usuarios1);
+									
+									System.out.println(usuarios);
+							
+								
+								vc.getV().getTa().setText("Usuarios \n"+usuarios1);
+							}else if(o instanceof Comandos){
+								System.out.println("Detectado un comando");
+								Comandos c = (Comandos)o;
+								if(c.borrarData){
+									System.out.println("BORRADO DATA");
+									vc.getTa().setText("");
+								}
 							}
 						} catch (ClassNotFoundException e1) {
 							connected=false;

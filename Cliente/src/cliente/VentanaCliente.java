@@ -40,10 +40,11 @@ public class VentanaCliente extends JFrame{
 	JPanel p;
 	JScrollPane scroll;
 	public VentanaCliente(){
+		
 
 		this.setSize(800, 500);
-
-		this.setTitle("CLIENTE");
+		this.setLocationRelativeTo(null);
+		this.setTitle("Cliente");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		ta= new JTextArea(20,60);

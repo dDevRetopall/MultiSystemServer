@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -23,11 +24,11 @@ public class VentanaServidor extends JFrame{
 	JLabel l = new JLabel("Username: ");
 	JLabel l2 = new JLabel("IP: ");
 	JLabel kick= new JLabel ("Kick username : ");
-	JTextField username = new JTextField(20);
+	JTextField username = new JTextField(10);
 	JButton bKick = new JButton("Kick username");
 	JTextField te3 = new JTextField(10);
 	JTextField te2 = new JTextField(10);
-	JTextField te = new JTextField(20);
+	JTextField te = new JTextField(10);
 	JTextArea ta ;
 	JButton listaUsuarios = new JButton("Lista de Usuarios");
 	JButton b = new JButton("Enviar");
@@ -40,8 +41,8 @@ public class VentanaServidor extends JFrame{
 	public VentanaServidor(){
 		
 		this.setSize(800, 500);
-		
-		this.setTitle("SERVIDOR");
+		this.setLocationRelativeTo(null);
+		this.setTitle("Servidor");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		ta= new JTextArea(20,60);
@@ -77,7 +78,13 @@ public class VentanaServidor extends JFrame{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				MainServidor.eliminarData();
+				int respuesta=JOptionPane.showConfirmDialog(null, "Seguro que quieres borrar la DATA", "Advertencia", JOptionPane.YES_NO_OPTION);
+				if(respuesta == JOptionPane.YES_OPTION){
+					MainServidor.eliminarData();
+				}else{
+					
+				}
+				
 			}
 			
 		});
@@ -86,7 +93,7 @@ public class VentanaServidor extends JFrame{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				MainServidor.enviarMensajeATodos(new Mensaje("<-SERVIDOR->  "+te.getText()+"  <-Servidor->"));
+				MainServidor.enviarMensajeATodos(new Mensaje("<-SERVIDOR->  "+te.getText()+"  <-SERVIDOR->"));
 			}
 			
 		});

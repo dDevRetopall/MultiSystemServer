@@ -17,7 +17,8 @@ public class VentanaUsuarios extends JFrame {
 
 		this.setTitle("Usuarios");
 		
-		
+		this.setLocationRelativeTo(null);
+
 		this.setContentPane(p);
 		ta.setEditable(false);
 		ta.setText("Usuarios"+"\n");

@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import comun.Comandos;
 import comun.Mensaje;
 import comun.Usuario;
 import comun.Usuarios;
@@ -24,6 +25,7 @@ public class Cliente {
 		for(Mensaje m : Loader.mensajes){
 			enviarMensaje(m);
 		}
+	
 		Thread t = new Thread(new Runnable() {
 			
 			public void run() {
@@ -45,6 +47,7 @@ public class Cliente {
 						}
 						
 					} catch (IOException e) {
+						MainServidor.u.remove(Cliente.this.getUsuario());
 						connected=false;
 						e.printStackTrace();
 					} catch (ClassNotFoundException e) {
@@ -75,6 +78,19 @@ public class Cliente {
 		}
 		}
 	}
+	public void enviarMensaje(Comandos c){
+		if(connected){
+		OutputStream os;
+		try {
+			os = s.getOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(os);
+			oos.writeObject(c);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+	}
 	public void enviarMensaje(Usuarios u){
 		if(connected){
 		OutputStream os;
@@ -93,6 +109,7 @@ public class Cliente {
 			s.close();
 			connected=false;
 			System.out.println("Se ha kickeado a "+usuario);
+			MainServidor.u.remove(this.getUsuario());
 			MainServidor.enviarMensajeATodos(new Mensaje("Se ha kickeado a "+usuario));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
