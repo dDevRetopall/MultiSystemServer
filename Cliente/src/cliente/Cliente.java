@@ -29,6 +29,7 @@ public class Cliente {
 	public Cliente(String usuario,VentanaCliente vc){
 		this.vc=vc;
 		this.usuario = usuario;
+		
 		try{
 			s= new Socket(Constantes.HOST,Constantes.PORT);
 			connected=true;

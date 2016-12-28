@@ -25,6 +25,9 @@ public class Cliente {
 		for(Mensaje m : Loader.mensajes){
 			enviarMensaje(m);
 		}
+		if(Loader.mensajes.isEmpty()){
+			enviarMensaje(new Comandos(true));
+		}
 	
 		Thread t = new Thread(new Runnable() {
 			
