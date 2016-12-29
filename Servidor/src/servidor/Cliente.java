@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,17 +20,15 @@ import comun.Usuarios;
 public class Cliente {
 	private Socket s;
 	private String usuario="";
+	private String ipUsuario="";
 	private boolean connected=false;
 	public Cliente(Socket s){
 		this.s = s;
 		connected=true;
 		
-		for(Mensaje m : Loader.mensajes){
-			enviarMensaje(m);
-		}
-		if(Loader.mensajes.isEmpty()){
-			enviarMensaje(new Comandos(true));
-		}
+		
+		
+	
 	
 		Thread t = new Thread(new Runnable() {
 			
@@ -47,15 +46,45 @@ public class Cliente {
 							MainServidor.enviarMensajeATodos(m);
 							}
 						}else if(o instanceof Usuario){
+							System.out.println("USUARIO");
+							boolean estaEnListaNegra=false;
 							Usuario u =(Usuario)o;
 							usuario= u.getUsername();
+							
+							ipUsuario=	s.getInetAddress().getHostAddress();
+							System.out.println(ipUsuario+" : "+usuario);
 							boolean b=MainServidor.existeUsuario(u.getUsername());
+							
 							if(!b){
+								Iterator<String> i = ListaNegra.ipaddress.iterator();
+								while(i.hasNext()){
+									String ip=i.next();
+									System.out.println(ip);
+									if(ipUsuario.equals(ip)){
+										estaEnListaNegra=true;
+										System.out.println(ipUsuario+" DETECTADA");
+									}
+								}
+								System.out.println("ESTA EN LISTA NEGRA?? "+estaEnListaNegra);
+								if(!estaEnListaNegra){
+								
 								System.out.println("NOMBRE USUARIOS RECIBIDO "+ u.getUsername());
 								MainServidor.u.usuariosNombre.add(usuario);
 								MainServidor.enviarMensajeATodos(MainServidor.u);
+								for(Mensaje m : Loader.mensajes){
+									enviarMensaje(m);
+								}
+								if(Loader.mensajes.isEmpty()){
+									enviarMensaje(new Comandos(true));
+								}
+								}else{
+									enviarMensaje(new Comandos(true,true,"Has sido baneado"));
+									MainServidor.enviarMensajeATodos(MainServidor.u);
+									connected=false;
+									s.close();
+								}
 							}else{
-								enviarMensaje(new Comandos(true,true));
+								enviarMensaje(new Comandos(true,true,"Ya existe ese usuario"));
 								MainServidor.enviarMensajeATodos(MainServidor.u);
 								connected=false;
 								s.close();
@@ -145,8 +174,21 @@ public class Cliente {
 			MainServidor.enviarMensajeATodos(new Mensaje("Se ha kickeado a "+usuario));
 			MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("ERROR NORMAL??¿?¿");
 			e.printStackTrace();
+		}
+	}
+	public void ban() {
+		System.out.println("BANEADA "+ipUsuario+" : "+usuario);
+		ListaNegra.ipaddress.add(this.getIpUsuario());
+		//ListaNegra.username.add(this.getUsuario());
+		System.out.println("Se ha baneado a "+getUsuario()+" con "+getIpUsuario());
+		MainServidor.enviarMensajeATodos(new Mensaje(getUsuario()+" has been banned"));
+		enviarMensaje(new Comandos(true,true,"El servidor te ha baneado"));
+		Iterator i = ListaNegra.ipaddress.iterator();
+		ListaNegra.saveList();
+		while(i.hasNext()){
+			System.out.println("IP BANEADA  : "+i.next());
 		}
 	}
 	public String getUsuario() {
@@ -155,5 +197,14 @@ public class Cliente {
 	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
+
+	public String getIpUsuario() {
+		return ipUsuario;
+	}
+
+	public void setIpUsuario(String ipUsuario) {
+		this.ipUsuario = ipUsuario;
+	}
+	
 	
 }

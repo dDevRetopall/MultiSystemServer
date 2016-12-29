@@ -33,6 +33,8 @@ public class VentanaServidor extends JFrame{
 	JButton listaUsuarios = new JButton("Lista de Usuarios");
 	JButton b = new JButton("Enviar");
 	JButton b2 = new JButton("Clear data");
+	JButton ban = new JButton("Ban");
+	JButton unban = new JButton("Unban");
 	JPanel p1= new JPanel(new FlowLayout());
 	JPanel p2= new JPanel(new FlowLayout());
 	JPanel p3= new JPanel(new FlowLayout());
@@ -57,8 +59,11 @@ public class VentanaServidor extends JFrame{
 		p.add(p2,BorderLayout.CENTER);
 		p.add(p3,BorderLayout.SOUTH);
 		p1.add(kick);
+		
 		p1.add(username);
 		p1.add(bKick);
+		p1.add(ban);
+		p1.add(unban);
 		p1.add(b2);
 		p1.add(te);
 		p1.add(b);
@@ -82,9 +87,28 @@ public class VentanaServidor extends JFrame{
 				if(respuesta == JOptionPane.YES_OPTION){
 					MainServidor.eliminarData();
 				}else{
-					
+					MainServidor.buscarSocketYBanear(username.getText());
 				}
 				
+			}
+			
+		});
+		ban.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				MainServidor.buscarSocketYBanear(username.getText());
+			}
+			
+		});
+		unban.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				String ip=JOptionPane.showInputDialog(new JTextField(),"Escriba la ip que deseas desbanear");
+				MainServidor.buscarSocketYDesBanear(ip);
 			}
 			
 		});

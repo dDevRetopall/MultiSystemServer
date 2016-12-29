@@ -47,6 +47,7 @@ public class MainServidor {
 			e1.printStackTrace();
 		}
 		try {
+			ListaNegra.loadList();
 			sc = new ServerSocket(Constantes.PORT);
 			vs = new VentanaServidor();
 			vs.getTa().setText(vs.getTa().getText() + "Servidor ejecutando" + "\n");
@@ -114,6 +115,7 @@ public class MainServidor {
 				u.usuariosNombre.remove(c.getUsuario());
 				enviarMensajeATodos(u);
 				c2++;
+				break;//no boligatorio
 			}
 		}
 		if (c2 == 0) {
@@ -121,6 +123,41 @@ public class MainServidor {
 		} else {
 			System.out.println("Se ha(n) encontrado a " + c2 + " persona(s)");
 		}
+	}
+	public static void buscarSocketYBanear(String username) {
+		int c2 = 0;
+		for (Cliente c : clientes) {
+
+			if (c.getUsuario().startsWith(username)) {
+				c.ban();
+				c.kick();
+				
+				clientes.remove(c);
+				u.usuariosNombre.remove(c.getUsuario());
+				enviarMensajeATodos(u);
+				c2++;
+				break;//no obligatorio
+			}
+		}
+		if (c2 == 0) {
+			System.out.println("No se ha encontrado a esa persona para banearla");
+		} else {
+			System.out.println("Se ha(n) encontrado a " + c2 + " persona(s) para banear");
+		}
+	}
+	public static void buscarSocketYDesBanear(String ip ) {
+		int c2 = 0;
+		
+
+				System.out.println(ip);
+				ListaNegra.ipaddress.remove(ip);
+				System.out.println("Se ha desbaneado a "+ip);
+				enviarMensajeATodos(new Mensaje(ip+" has been unbanned"));
+				
+				
+			
+		
+		
 	}
 
 	public static void eliminarData() {

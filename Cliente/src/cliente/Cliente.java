@@ -90,7 +90,7 @@ public class Cliente {
 								}else if(c.existeUsuario){
 									if(c.enseñarOptionPane){
 										vc.te2.setText("");
-										JOptionPane.showMessageDialog(null, "Ya existe ese usuario");
+										JOptionPane.showMessageDialog(null,c.mensaje);
 									}
 								}
 							}
