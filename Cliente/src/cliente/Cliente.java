@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import comun.Comandos;
 import comun.Constantes;
 import comun.Mensaje;
+
 import comun.Usuario;
 import comun.Usuarios;
 
@@ -66,14 +68,16 @@ public class Cliente {
 								vc.getTa().setText(vc.getTa().getText()+m.getMensaje());
 							}else if(o instanceof Usuarios){
 								System.out.println("Detectado un usuario");
-								HashSet usuarios = (Usuarios)o;
+								Usuarios usuarios = (Usuarios)o;
 								String usuarios1="";
-								Iterator i = usuarios.iterator();
-								if(i.hasNext()){
+								Iterator i = usuarios.usuariosNombre.iterator();
+								while(i.hasNext()){
+									
 									usuarios1=usuarios1+i.next()+"\n";
+									System.out.println(usuarios1);
 								}
 									
-									System.out.println(usuarios);
+								
 							
 								
 								vc.getV().getTa().setText("Usuarios \n"+usuarios1);
@@ -83,6 +87,11 @@ public class Cliente {
 								if(c.borrarData){
 									System.out.println("BORRADO DATA");
 									vc.getTa().setText("");
+								}else if(c.existeUsuario){
+									if(c.enseñarOptionPane){
+										vc.te2.setText("");
+										JOptionPane.showMessageDialog(null, "Ya existe ese usuario");
+									}
 								}
 							}
 						} catch (ClassNotFoundException e1) {
@@ -119,6 +128,7 @@ public class Cliente {
 		}
 
 	}
+
 	public void enviarMensajeAlServidor(Usuario u) {
 		OutputStream os;
 		try {

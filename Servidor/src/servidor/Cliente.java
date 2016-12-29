@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import comun.Comandos;
 import comun.Mensaje;
@@ -39,21 +41,40 @@ public class Cliente {
 						ObjectInputStream ois = new ObjectInputStream(is);
 						Object o = ois.readObject();
 						if(o instanceof Mensaje){
+							if(connected=true){
 							Mensaje m =(Mensaje)o;
 							System.out.println(m.getMensaje());
 							MainServidor.enviarMensajeATodos(m);
+							}
 						}else if(o instanceof Usuario){
 							Usuario u =(Usuario)o;
 							usuario= u.getUsername();
-							MainServidor.u.add(usuario);
-							MainServidor.enviarMensajeATodos(MainServidor.u);
+							boolean b=MainServidor.existeUsuario(u.getUsername());
+							if(!b){
+								System.out.println("NOMBRE USUARIOS RECIBIDO "+ u.getUsername());
+								MainServidor.u.usuariosNombre.add(usuario);
+								MainServidor.enviarMensajeATodos(MainServidor.u);
+							}else{
+								enviarMensaje(new Comandos(true,true));
+								MainServidor.u.usuariosNombre.remove(Cliente.this.getUsuario());
+								MainServidor.enviarMensajeATodos(MainServidor.u);
+								connected=false;
+								
+								s.close();
+								
+								
+							}
+							
 						}
 						
 					} catch (IOException e) {
-						MainServidor.u.remove(Cliente.this.getUsuario());
+						MainServidor.u.usuariosNombre.remove(Cliente.this.getUsuario());
+						MainServidor.enviarMensajeATodos(MainServidor.u);
 						connected=false;
 						e.printStackTrace();
 					} catch (ClassNotFoundException e) {
+						MainServidor.u.usuariosNombre.remove(Cliente.this.getUsuario());
+						MainServidor.enviarMensajeATodos(MainServidor.u);
 						connected=false;
 						e.printStackTrace();
 					}
@@ -94,13 +115,17 @@ public class Cliente {
 		}
 		}
 	}
-	public void enviarMensaje(Usuarios u){
+	public void enviarMensaje(Usuarios usuariosNombres){
 		if(connected){
 		OutputStream os;
 		try {
 			os = s.getOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(os);
-			oos.writeObject(u);
+			oos.writeObject(usuariosNombres);
+			Iterator i = usuariosNombres.usuariosNombre.iterator();
+			while(i.hasNext()){
+				System.out.println("->"+i.next());
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -112,7 +137,7 @@ public class Cliente {
 			s.close();
 			connected=false;
 			System.out.println("Se ha kickeado a "+usuario);
-			MainServidor.u.remove(this.getUsuario());
+			MainServidor.u.usuariosNombre.remove(this.getUsuario());
 			MainServidor.enviarMensajeATodos(new Mensaje("Se ha kickeado a "+usuario));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

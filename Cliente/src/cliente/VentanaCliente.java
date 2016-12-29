@@ -89,8 +89,9 @@ public class VentanaCliente extends JFrame{
 					super.mouseClicked(e);
 					Constantes.HOST=te3.getText();
 					c = new Cliente(te2.getText(),VentanaCliente.this);
-					c.enviarMensajeAlServidor(new Mensaje(te2.getText(),true));
 					c.enviarMensajeAlServidor(new Usuario(te2.getText()));
+					c.enviarMensajeAlServidor(new Mensaje(te2.getText(),true));
+					
 					b.setEnabled(true);
 				}
 			}
