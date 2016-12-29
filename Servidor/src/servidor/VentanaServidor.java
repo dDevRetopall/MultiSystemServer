@@ -31,10 +31,12 @@ public class VentanaServidor extends JFrame{
 	JTextField te = new JTextField(10);
 	JTextArea ta ;
 	JButton listaUsuarios = new JButton("Lista de Usuarios");
+	JButton listaBaneados = new JButton("Lista de Baneados");
 	JButton b = new JButton("Enviar");
 	JButton b2 = new JButton("Clear data");
 	JButton ban = new JButton("Ban");
 	JButton unban = new JButton("Unban");
+	
 	JPanel p1= new JPanel(new FlowLayout());
 	JPanel p2= new JPanel(new FlowLayout());
 	JPanel p3= new JPanel(new FlowLayout());
@@ -69,6 +71,7 @@ public class VentanaServidor extends JFrame{
 		p1.add(b);
 		p2.add(scroll);
 		p3.add(listaUsuarios);
+		p3.add(listaBaneados);
 		listaUsuarios.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -89,6 +92,16 @@ public class VentanaServidor extends JFrame{
 				}else{
 					MainServidor.buscarSocketYBanear(username.getText());
 				}
+				
+			}
+			
+		});
+		listaBaneados.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				VentanaBaneados b = new VentanaBaneados();
 				
 			}
 			

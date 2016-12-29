@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
+
 import comun.Comandos;
 import comun.Mensaje;
 import comun.Usuario;
@@ -179,7 +181,9 @@ public class Cliente {
 		}
 	}
 	public void ban() {
-		System.out.println("BANEADA "+ipUsuario+" : "+usuario);
+		int respuesta=JOptionPane.showConfirmDialog(null, "Seguro que quieres banear a "+usuario+"con la ip "+ipUsuario);
+		if(respuesta==JOptionPane.YES_OPTION){
+			System.out.println("BANEADA "+ipUsuario+" : "+usuario);
 		ListaNegra.ipaddress.add(this.getIpUsuario());
 		//ListaNegra.username.add(this.getUsuario());
 		System.out.println("Se ha baneado a "+getUsuario()+" con "+getIpUsuario());
@@ -190,6 +194,8 @@ public class Cliente {
 		while(i.hasNext()){
 			System.out.println("IP BANEADA  : "+i.next());
 		}
+		}
+		
 	}
 	public String getUsuario() {
 		return usuario;

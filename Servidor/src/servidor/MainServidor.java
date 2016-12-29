@@ -153,7 +153,7 @@ public class MainServidor {
 				ListaNegra.ipaddress.remove(ip);
 				System.out.println("Se ha desbaneado a "+ip);
 				enviarMensajeATodos(new Mensaje(ip+" has been unbanned"));
-				
+				ListaNegra.saveList();
 				
 			
 		
