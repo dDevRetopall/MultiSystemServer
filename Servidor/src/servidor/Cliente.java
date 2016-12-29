@@ -141,6 +141,7 @@ public class Cliente {
 			connected=false;
 			System.out.println("Se ha kickeado a "+usuario);
 			MainServidor.u.usuariosNombre.remove(this.getUsuario());
+			
 			MainServidor.enviarMensajeATodos(new Mensaje("Se ha kickeado a "+usuario));
 			MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
 		} catch (IOException e) {

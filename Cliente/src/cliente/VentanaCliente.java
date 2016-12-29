@@ -105,10 +105,10 @@ public class VentanaCliente extends JFrame{
 			public void mouseClicked(MouseEvent e) {
 				if(b.isEnabled()){
 					super.mouseClicked(e);
-					if(te.getText().equals("")){
+					
 					c.enviarMensajeAlServidor(new Mensaje(te.getText()));
 					te.setText("");
-					}
+					
 				}
 			}
 
