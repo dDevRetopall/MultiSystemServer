@@ -41,7 +41,7 @@ public class VentanaCliente extends JFrame{
 	JScrollPane scroll;
 	public VentanaCliente(){
 		
-
+		
 		this.setSize(800, 500);
 		this.setLocationRelativeTo(null);
 		this.setTitle("Cliente");
@@ -70,6 +70,7 @@ public class VentanaCliente extends JFrame{
 		p2.add(scroll);
 		p3.add(listaUsuarios);
 		v = new VentanaUsuarios();
+		v.getTa().setText("No estas conectado");
 		
 		listaUsuarios.addMouseListener(new MouseAdapter() {
 
@@ -88,6 +89,7 @@ public class VentanaCliente extends JFrame{
 				if(b2.isEnabled()){
 					super.mouseClicked(e);
 					Constantes.HOST=te3.getText();
+					v.getTa().setText("Usuarios"+"\n");
 					c = new Cliente(te2.getText(),VentanaCliente.this);
 					c.enviarMensajeAlServidor(new Usuario(te2.getText()));
 					c.enviarMensajeAlServidor(new Mensaje(te2.getText(),true));
@@ -103,8 +105,10 @@ public class VentanaCliente extends JFrame{
 			public void mouseClicked(MouseEvent e) {
 				if(b.isEnabled()){
 					super.mouseClicked(e);
+					if(te.getText().equals("")){
 					c.enviarMensajeAlServidor(new Mensaje(te.getText()));
 					te.setText("");
+					}
 				}
 			}
 
@@ -130,10 +134,13 @@ public class VentanaCliente extends JFrame{
 	public void habilitarConexion(){
 		b2.setEnabled(true);
 		b.setEnabled(false);
+		v.getTa().setText("No estas conectado");
+		
 	}
 	public void deshabilitarConexion() {
 		b2.setEnabled(false);
 		b.setEnabled(true);
+	
 
 	}
 

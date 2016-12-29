@@ -24,7 +24,7 @@ public class VentanaUsuarios extends JFrame {
 		
 		this.setContentPane(p);
 		ta.setEditable(false);
-		ta.setText("Usuarios"+"\n");
+		
 		JScrollPane scroll= new JScrollPane(ta);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		p.add(scroll);
