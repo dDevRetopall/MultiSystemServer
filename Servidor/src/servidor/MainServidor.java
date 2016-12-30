@@ -63,11 +63,26 @@ public class MainServidor {
 			public void run() {
 				while (true) {
 					try {
-
+						
 						s = sc.accept();
+						for(Cliente c2:clientes){
+						if(c2.connected){
+							if(s.getInetAddress().getHostAddress().equals(c2.s.getInetAddress().getHostAddress())){
+								
+								c2.enviarMensaje(new Comandos(true,true,"Ya hay un cliente usando esa IP"));
+								MainServidor.enviarMensajeATodos(MainServidor.u);
+								
+								s.close();
+								System.out.println("Ya hay un cliente corriendo en esa ip");
+							}
+						}
+						}
 						Cliente c = new Cliente(s);
 						clientes.add(c);
+						
+						
 
+								
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

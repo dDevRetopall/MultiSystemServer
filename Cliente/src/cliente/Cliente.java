@@ -82,8 +82,10 @@ public class Cliente {
 								
 								vc.getV().getTa().setText("Usuarios \n"+usuarios1);
 							}else if(o instanceof Comandos){
+								
 								System.out.println("Detectado un comando");
 								Comandos c = (Comandos)o;
+					
 								if(c.borrarData){
 									System.out.println("BORRADO DATA");
 									vc.getTa().setText("");

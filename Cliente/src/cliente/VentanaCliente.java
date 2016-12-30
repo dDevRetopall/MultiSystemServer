@@ -90,6 +90,8 @@ public class VentanaCliente extends JFrame{
 					super.mouseClicked(e);
 					Constantes.HOST=te3.getText();
 					v.getTa().setText("Usuarios"+"\n");
+					//Puerto.loadList();
+					
 					c = new Cliente(te2.getText(),VentanaCliente.this);
 					c.enviarMensajeAlServidor(new Usuario(te2.getText()));
 					c.enviarMensajeAlServidor(new Mensaje(te2.getText(),true));
@@ -105,9 +107,10 @@ public class VentanaCliente extends JFrame{
 			public void mouseClicked(MouseEvent e) {
 				if(b.isEnabled()){
 					super.mouseClicked(e);
-					
+					if(!te.getText().isEmpty()){
 					c.enviarMensajeAlServidor(new Mensaje(te.getText()));
 					te.setText("");
+					}
 					
 				}
 			}

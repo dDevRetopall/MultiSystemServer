@@ -7,6 +7,7 @@ public class Comandos implements Serializable{
 	public boolean existeUsuario;
 	public boolean enseñarOptionPane;
 	public String mensaje;
+	public int port;
 	
 	public Comandos(boolean borrarData){
 		this.borrarData = borrarData;
@@ -17,6 +18,10 @@ public class Comandos implements Serializable{
 		this.enseñarOptionPane = enseñarOptionPane;
 		this.mensaje = mensaje;
 		
+		
+	}
+	public Comandos(int port){
+		this.port = port;
 		
 	}
 }

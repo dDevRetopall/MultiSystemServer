@@ -15,7 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-
+import comun.Comandos;
 import comun.Constantes;
 import comun.Mensaje;
 
@@ -36,7 +36,9 @@ public class VentanaServidor extends JFrame{
 	JButton b2 = new JButton("Clear data");
 	JButton ban = new JButton("Ban");
 	JButton unban = new JButton("Unban");
-	
+	JButton cambiarPuerto = new JButton("Cambiar puerto");
+	JTextField puerto = new JTextField(10);
+	JLabel lPuerto = new JLabel("Puerto : ");
 	JPanel p1= new JPanel(new FlowLayout());
 	JPanel p2= new JPanel(new FlowLayout());
 	JPanel p3= new JPanel(new FlowLayout());
@@ -72,6 +74,9 @@ public class VentanaServidor extends JFrame{
 		p2.add(scroll);
 		p3.add(listaUsuarios);
 		p3.add(listaBaneados);
+		p3.add(lPuerto);
+		p3.add(puerto);
+		p3.add(cambiarPuerto);
 		listaUsuarios.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -92,6 +97,17 @@ public class VentanaServidor extends JFrame{
 				}else{
 					MainServidor.buscarSocketYBanear(username.getText());
 				}
+				
+			}
+			
+		});
+		cambiarPuerto.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				
+				
 				
 			}
 			

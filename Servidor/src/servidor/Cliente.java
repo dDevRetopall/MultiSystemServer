@@ -20,10 +20,10 @@ import comun.Usuarios;
 
 
 public class Cliente {
-	private Socket s;
+	public Socket s;
 	private String usuario="";
 	private String ipUsuario="";
-	private boolean connected=false;
+	public boolean connected=false;
 	public Cliente(Socket s){
 		this.s = s;
 		connected=true;
