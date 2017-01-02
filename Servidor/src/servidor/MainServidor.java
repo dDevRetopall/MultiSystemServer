@@ -63,26 +63,26 @@ public class MainServidor {
 			public void run() {
 				while (true) {
 					try {
+						int contador = 0;
 						
 						s = sc.accept();
-						for(Cliente c2:clientes){
-						if(c2.connected){
-							if(s.getInetAddress().getHostAddress().equals(c2.s.getInetAddress().getHostAddress())){
-								
-								c2.enviarMensaje(new Comandos(true,true,"Ya hay un cliente usando esa IP"));
-								MainServidor.enviarMensajeATodos(MainServidor.u);
-								
-								s.close();
-								System.out.println("Ya hay un cliente corriendo en esa ip");
+						for (Cliente c2 : clientes) {
+							if (c2.connected) {
+								if (s.getInetAddress().getHostAddress()
+										.equals(c2.s.getInetAddress().getHostAddress())) {
+									
+									s.close();
+									
+
+									System.out.println("Ya hay un cliente corriendo en esa ip");
+								}
 							}
 						}
+						if (contador == 0) {
+							Cliente c = new Cliente(s);
+							clientes.add(c);
 						}
-						Cliente c = new Cliente(s);
-						clientes.add(c);
-						
-						
 
-								
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -130,7 +130,7 @@ public class MainServidor {
 				u.usuariosNombre.remove(c.getUsuario());
 				enviarMensajeATodos(u);
 				c2++;
-				break;//no boligatorio
+				break;// no boligatorio
 			}
 		}
 		if (c2 == 0) {
@@ -139,6 +139,7 @@ public class MainServidor {
 			System.out.println("Se ha(n) encontrado a " + c2 + " persona(s)");
 		}
 	}
+
 	public static void buscarSocketYBanear(String username) {
 		int c2 = 0;
 		for (Cliente c : clientes) {
@@ -146,12 +147,12 @@ public class MainServidor {
 			if (c.getUsuario().startsWith(username)) {
 				c.ban();
 				c.kick();
-				
+
 				clientes.remove(c);
 				u.usuariosNombre.remove(c.getUsuario());
 				enviarMensajeATodos(u);
 				c2++;
-				break;//no obligatorio
+				break;// no obligatorio
 			}
 		}
 		if (c2 == 0) {
@@ -160,19 +161,16 @@ public class MainServidor {
 			System.out.println("Se ha(n) encontrado a " + c2 + " persona(s) para banear");
 		}
 	}
-	public static void buscarSocketYDesBanear(String ip ) {
-		int c2 = 0;
-		
 
-				System.out.println(ip);
-				ListaNegra.ipaddress.remove(ip);
-				System.out.println("Se ha desbaneado a "+ip);
-				enviarMensajeATodos(new Mensaje(ip+" has been unbanned"));
-				ListaNegra.saveList();
-				
-			
-		
-		
+	public static void buscarSocketYDesBanear(String ip) {
+		int c2 = 0;
+
+		System.out.println(ip);
+		ListaNegra.ipaddress.remove(ip);
+		System.out.println("Se ha desbaneado a " + ip);
+		enviarMensajeATodos(new Mensaje(ip + " has been unbanned"));
+		ListaNegra.saveList();
+
 	}
 
 	public static void eliminarData() {

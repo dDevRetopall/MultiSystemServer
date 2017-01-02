@@ -98,18 +98,24 @@ public class Cliente {
 						}
 						
 					} catch (IOException e) {
+						if(!Cliente.this.getUsuario().isEmpty()){
 						MainServidor.u.usuariosNombre.remove(Cliente.this.getUsuario());
 						MainServidor.enviarMensajeATodos(MainServidor.u);
 						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
 						
 						connected=false;
+						}
 						e.printStackTrace();
+						
 					} catch (ClassNotFoundException e) {
+						if(!Cliente.this.getUsuario().isEmpty()){
 						MainServidor.u.usuariosNombre.remove(Cliente.this.getUsuario());
 						MainServidor.enviarMensajeATodos(MainServidor.u);
 						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
 						
 						connected=false;
+						
+						}
 						e.printStackTrace();
 					}
 					
@@ -124,7 +130,7 @@ public class Cliente {
 	}
 	
 	public void enviarMensaje(Mensaje m){
-		if(connected){
+		if(connected ){
 		OutputStream os;
 		try {
 			os = s.getOutputStream();
