@@ -31,6 +31,8 @@ public class MainCliente {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+	
 		VentanaCliente vc = new VentanaCliente();
 		
 

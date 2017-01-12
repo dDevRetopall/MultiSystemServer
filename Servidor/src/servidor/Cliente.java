@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 
 import comun.Comandos;
 import comun.Mensaje;
+import comun.Profile;
 import comun.Usuario;
 import comun.Usuarios;
 
@@ -24,9 +25,24 @@ public class Cliente {
 	private String usuario="";
 	private String ipUsuario="";
 	public boolean connected=false;
+	OutputStream os;
+	ObjectOutputStream oos ;
+	InputStream is;
+	ObjectInputStream ois ;
+	
 	public Cliente(Socket s){
 		this.s = s;
 		connected=true;
+		try {
+			os = s.getOutputStream();
+			oos= new ObjectOutputStream(os);
+			is = s.getInputStream();
+			ois= new ObjectInputStream(is);
+			
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		
 		
@@ -35,11 +51,12 @@ public class Cliente {
 		Thread t = new Thread(new Runnable() {
 			
 			public void run() {
+				
+				
 				while(connected){
 					
 					try {
-						InputStream is = s.getInputStream();
-						ObjectInputStream ois = new ObjectInputStream(is);
+						
 						Object o = ois.readObject();
 						if(o instanceof Mensaje){
 							if(connected){
@@ -47,6 +64,14 @@ public class Cliente {
 							System.out.println(m.getMensaje());
 							MainServidor.enviarMensajeATodos(m);
 							}
+						}else if(o instanceof Profile){
+							System.out.println("Ha llegado una nueva peticion de registro!!!");
+							Profile p =(Profile)o;
+							GestionUsuarios.register(p.getUsername(), p.getPassword());
+							System.out.println("Se ha creado un registro nuevo");
+							System.out.println("Cerrando entrada...");
+							connected=false;
+							s.close();
 						}else if(o instanceof Usuario){
 							System.out.println("USUARIO");
 							boolean estaEnListaNegra=false;
@@ -56,7 +81,7 @@ public class Cliente {
 							ipUsuario=	s.getInetAddress().getHostAddress();
 							System.out.println(ipUsuario+" : "+usuario);
 							boolean b=MainServidor.existeUsuario(u.getUsername());
-							
+							System.out.println("Existe usuario??? "+b);
 							if(!b){
 								Iterator<String> i = ListaNegra.ipaddress.iterator();
 								while(i.hasNext()){
@@ -82,12 +107,25 @@ public class Cliente {
 								}else{
 									enviarMensaje(new Comandos(true,true,"Has sido baneado"));
 									MainServidor.enviarMensajeATodos(MainServidor.u);
+//									try {
+//										Thread.sleep(40);
+//									} catch (InterruptedException e) {
+//										// TODO Auto-generated catch block
+//										e.printStackTrace();
+//									}
 									connected=false;
 									s.close();
 								}
 							}else{
+								System.out.println("Enviando mensaje de q ya existe el usuario");
 								enviarMensaje(new Comandos(true,true,"Ya existe ese usuario"));
 								MainServidor.enviarMensajeATodos(MainServidor.u);
+							/*	try {
+									Thread.sleep(40);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}*/
 								connected=false;
 								s.close();
 								
@@ -131,10 +169,9 @@ public class Cliente {
 	
 	public void enviarMensaje(Mensaje m){
 		if(connected ){
-		OutputStream os;
+	
 		try {
-			os = s.getOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(os);
+			
 			oos.writeObject(m);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -144,10 +181,9 @@ public class Cliente {
 	}
 	public void enviarMensaje(Comandos c){
 		if(connected){
-		OutputStream os;
+		
 		try {
-			os = s.getOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(os);
+			
 			oos.writeObject(c);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -157,10 +193,9 @@ public class Cliente {
 	}
 	public void enviarMensaje(Usuarios usuariosNombres){
 		if(connected){
-		OutputStream os;
+		
 		try {
-			os = s.getOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(os);
+			
 			oos.writeObject(usuariosNombres);
 			Iterator i = usuariosNombres.usuariosNombre.iterator();
 			while(i.hasNext()){
@@ -174,13 +209,14 @@ public class Cliente {
 	}
 	public void kick(){
 		try {
-			s.close();
-			connected=false;
-			System.out.println("Se ha kickeado a "+usuario);
-			MainServidor.u.usuariosNombre.remove(this.getUsuario());
 			
+			System.out.println("Se ha kickeado a "+usuario);
 			MainServidor.enviarMensajeATodos(new Mensaje("Se ha kickeado a "+usuario));
 			MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
+			
+			
+			s.close();
+			connected=false;
 		} catch (IOException e) {
 			System.out.println("ERROR NORMAL??¿?¿");
 			e.printStackTrace();

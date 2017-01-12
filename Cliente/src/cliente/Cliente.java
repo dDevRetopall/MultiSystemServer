@@ -18,7 +18,8 @@ import javax.swing.JPanel;
 import comun.Comandos;
 import comun.Constantes;
 import comun.Mensaje;
-
+import comun.PeticionDeLogin;
+import comun.Profile;
 import comun.Usuario;
 import comun.Usuarios;
 
@@ -28,9 +29,15 @@ public class Cliente {
 	private boolean connected=false;
 	VentanaCliente vc;
 	private String usuario;
+	InputStream is;
+	ObjectInputStream ois;
+	OutputStream os;
+	ObjectOutputStream oos;
+	private boolean usuarioReal;
 	public Cliente(String usuario,VentanaCliente vc){
 		this.vc=vc;
 		this.usuario = usuario;
+		this.usuarioReal = usuarioReal;
 		
 		try{
 			s= new Socket(Constantes.HOST,Constantes.PORT);
@@ -47,6 +54,16 @@ public class Cliente {
 			vc.getTa().setText("No se pudo conectar, comprueba tu conexion a internet \n");
 			e.printStackTrace();
 		}
+		try {
+			os = s.getOutputStream();
+			oos= new ObjectOutputStream(os);
+			is = s.getInputStream();
+			ois= new ObjectInputStream(is);
+			
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		new Thread(){
 			@Override
@@ -54,12 +71,10 @@ public class Cliente {
 				while(connected){
 
 
-					InputStream is;
+					
 					
 						try {
 							
-							is = s.getInputStream();
-							ObjectInputStream ois = new ObjectInputStream(is);
 							try {
 							Object o = ois.readObject();
 							if(o instanceof Mensaje){
@@ -92,6 +107,7 @@ public class Cliente {
 								}else if(c.existeUsuario){
 									if(c.enseñarOptionPane){
 										vc.te2.setText("");
+										System.out.println("Visualizando cuadro de texto con "+c.mensaje);
 										JOptionPane.showMessageDialog(null,c.mensaje);
 									}
 								}
@@ -118,10 +134,9 @@ public class Cliente {
 	
 	
 	public void enviarMensajeAlServidor(Mensaje m) {
-		OutputStream os;
+		
 		try {
-			os = s.getOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(os);
+			
 			oos.writeObject(new Mensaje(usuario+"-> "+m.getMensaje()));//revisar
 		} catch (IOException e) {
 			connected=false;
@@ -132,17 +147,20 @@ public class Cliente {
 	}
 
 	public void enviarMensajeAlServidor(Usuario u) {
-		OutputStream os;
+	
 		try {
-			os = s.getOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(os);
+			
+			
 			oos.writeObject(u);
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			connected=false;
+			vc.habilitarConexion();
 			e.printStackTrace();
 		}
 
 	}
+	
+	
 
 }

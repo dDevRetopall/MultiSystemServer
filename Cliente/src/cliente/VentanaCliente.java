@@ -28,6 +28,8 @@ public class VentanaCliente extends JFrame{
 	JLabel l = new JLabel("Username: ");
 	JLabel l2 = new JLabel("IP: ");
 	JPanel p3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	VentanaRegister vr ;
+	VentanaLogin vl;
 	JTextField te3 = new JTextField(10);
 	JTextField te2 = new JTextField(10);
 	JTextField te = new JTextField(20);
@@ -39,6 +41,9 @@ public class VentanaCliente extends JFrame{
 	JPanel p2= new JPanel(new FlowLayout());
 	JPanel p;
 	JScrollPane scroll;
+	JLabel registrarse = new JLabel("Registrarse");
+	JLabel loguearte = new JLabel("Login");
+	
 	public VentanaCliente(){
 		
 		
@@ -53,23 +58,33 @@ public class VentanaCliente extends JFrame{
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		b.setEnabled(false);
 		b2.setEnabled(true);
-
+		
+		registrarse.setForeground(Color.BLUE);
+		loguearte.setForeground(Color.BLUE);
+		
 		p= new JPanel(new BorderLayout());
 		this.setContentPane(p);
 		te3.setText("localhost");
 		p.add(p1,BorderLayout.NORTH);
 		p.add(p2,BorderLayout.CENTER);
 		p.add(p3,BorderLayout.SOUTH);
+		
 		p1.add(l2);
 		p1.add(te3);
+		
 		p1.add(l);
 		p1.add(te2);
 		p1.add(b2);
 		p1.add(te);
 		p1.add(b);
 		p2.add(scroll);
+		p3.add(registrarse);
 		p3.add(listaUsuarios);
+		p3.add(loguearte);
+		
 		v = new VentanaUsuarios();
+		vr = new VentanaRegister();
+		vl = new VentanaLogin();
 		v.getTa().setText("No estas conectado");
 		
 		listaUsuarios.addMouseListener(new MouseAdapter() {
@@ -116,6 +131,23 @@ public class VentanaCliente extends JFrame{
 			}
 
 		});
+		registrarse.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				vr.setVisible(true);
+			}
+
+		});
+		loguearte.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				vl.setVisible(true);
+			}
+
+		});
+
 
 
 		this.setVisible(true);

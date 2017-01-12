@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +18,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import comun.Comandos;
 import comun.Constantes;
 import comun.Mensaje;
+import comun.Profile;
 import comun.Usuarios;
 
 public class MainServidor {
@@ -30,6 +31,7 @@ public class MainServidor {
 	static ArrayList<Cliente> clientes = new ArrayList<>();
 
 	public static void main(String[] args) {
+		
 		u = new Usuarios();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -50,7 +52,9 @@ public class MainServidor {
 			ListaNegra.loadList();
 			sc = new ServerSocket(Constantes.PORT);
 			vs = new VentanaServidor();
+			crearMySQL();
 			vs.getTa().setText(vs.getTa().getText() + "Servidor ejecutando" + "\n");
+			
 			System.out.println("Servidor ejecutando");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -68,13 +72,14 @@ public class MainServidor {
 						s = sc.accept();
 						for (Cliente c2 : clientes) {
 							if (c2.connected) {
-								if (s.getInetAddress().getHostAddress()
-										.equals(c2.s.getInetAddress().getHostAddress())) {
+								if (s.getInetAddress().getHostAddress().equals(c2.s.getInetAddress().getHostAddress())) {
+										
 									
-									s.close();
+									//s.close();
 									
-
+									
 									System.out.println("Ya hay un cliente corriendo en esa ip");
+									//contador++;
 								}
 							}
 						}
@@ -123,14 +128,15 @@ public class MainServidor {
 	public static void buscarSocket(String username) {
 		int c2 = 0;
 		for (Cliente c : clientes) {
-
+			System.out.println("Buscando socket del usuario "+c.getIpUsuario()+" <-***-> "+c.getUsuario());
 			if (c.getUsuario().startsWith(username)) {
 				c.kick();
+				System.out.println("Se va a kickeado a "+c.getUsuario());
 				clientes.remove(c);
 				u.usuariosNombre.remove(c.getUsuario());
 				enviarMensajeATodos(u);
 				c2++;
-				break;// no boligatorio
+				break;// no obligatorio
 			}
 		}
 		if (c2 == 0) {
@@ -193,6 +199,13 @@ public class MainServidor {
 			}
 		}
 		return false;
+	}
+	public static void crearMySQL(){
+		
+		GestionUsuarios.loadProfiles();
+		Connection con=ConnectionSQL.getConnection();
+		ConnectionSQL.createTable(con);
+		//ConnectionSQL.close(con);
 	}
 
 }
