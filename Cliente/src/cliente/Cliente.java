@@ -23,10 +23,9 @@ import comun.Profile;
 import comun.Usuario;
 import comun.Usuarios;
 
-
 public class Cliente {
-	public Socket s ;
-	private boolean connected=false;
+	public Socket s;
+	private boolean connected = false;
 	VentanaCliente vc;
 	private String usuario;
 	InputStream is;
@@ -34,112 +33,101 @@ public class Cliente {
 	OutputStream os;
 	ObjectOutputStream oos;
 	private boolean usuarioReal;
-	public Cliente(String usuario,VentanaCliente vc){
-		this.vc=vc;
+
+	public Cliente(String usuario, VentanaCliente vc) {
+		this.vc = vc;
 		this.usuario = usuario;
 		this.usuarioReal = usuarioReal;
-		
-		try{
-			s= new Socket(Constantes.HOST,Constantes.PORT);
-			connected=true;
+
+		try {
+			s = new Socket(Constantes.HOST, Constantes.PORT);
+			connected = true;
 			vc.deshabilitarConexion();
 		} catch (UnknownHostException e) {
-			connected=false;
+			connected = false;
 			vc.habilitarConexion();
 			vc.getTa().setText("No se reconoce ese host. \n");
 			e.printStackTrace();
 		} catch (IOException e) {
-			connected=false;
+			connected = false;
 			vc.habilitarConexion();
 			vc.getTa().setText("No se pudo conectar, comprueba tu conexion a internet \n");
 			e.printStackTrace();
 		}
 		try {
 			os = s.getOutputStream();
-			oos= new ObjectOutputStream(os);
+			oos = new ObjectOutputStream(os);
 			is = s.getInputStream();
-			ois= new ObjectInputStream(is);
-			
+			ois = new ObjectInputStream(is);
+
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		new Thread(){
+
+		new Thread() {
 			@Override
 			public void run() {
-				while(connected){
+				while (connected) {
+					try {
 
+						Object o = ois.readObject();
+						if (o instanceof Mensaje) {
+							System.out.println("Detectado un mensaje");
+							Mensaje m = (Mensaje) o;
+							vc.getTa().setText(vc.getTa().getText() + m.getMensaje());
+						} else if (o instanceof Usuarios) {
+							System.out.println("Detectado un usuario");
+							Usuarios usuarios = (Usuarios) o;
+							String usuarios1 = "";
+							Iterator i = usuarios.usuariosNombre.iterator();
+							while (i.hasNext()) {
 
-					
-					
-						try {
-							
-							try {
-							Object o = ois.readObject();
-							if(o instanceof Mensaje){
-								System.out.println("Detectado un mensaje");
-								Mensaje m = (Mensaje)o;
-								vc.getTa().setText(vc.getTa().getText()+m.getMensaje());
-							}else if(o instanceof Usuarios){
-								System.out.println("Detectado un usuario");
-								Usuarios usuarios = (Usuarios)o;
-								String usuarios1="";
-								Iterator i = usuarios.usuariosNombre.iterator();
-								while(i.hasNext()){
-									
-									usuarios1=usuarios1+i.next()+"\n";
-									System.out.println(usuarios1);
-								}
-									
-								
-							
-								
-								vc.getV().getTa().setText("Usuarios \n"+usuarios1);
-							}else if(o instanceof Comandos){
-								
-								System.out.println("Detectado un comando");
-								Comandos c = (Comandos)o;
-					
-								if(c.borrarData){
-									System.out.println("BORRADO DATA");
-									vc.getTa().setText("");
-								}else if(c.existeUsuario){
-									if(c.enseñarOptionPane){
-										vc.te2.setText("");
-										System.out.println("Visualizando cuadro de texto con "+c.mensaje);
-										JOptionPane.showMessageDialog(null,c.mensaje);
-									}
+								usuarios1 = usuarios1 + i.next() + "\n";
+								System.out.println(usuarios1);
+							}
+
+							vc.getV().getTa().setText("Usuarios \n" + usuarios1);
+						} else if (o instanceof Comandos) {
+
+							System.out.println("Detectado un comando");
+							Comandos c = (Comandos) o;
+
+							if (c.borrarData) {
+								System.out.println("BORRADO DATA");
+								vc.getTa().setText("");
+							} else if (c.existeUsuario) {
+								if (c.enseñarOptionPane) {
+									vc.te2.setText("");
+									System.out.println("Visualizando cuadro de texto con " + c.mensaje);
+									JOptionPane.showMessageDialog(vc, c.mensaje);
 								}
 							}
-						} catch (ClassNotFoundException e1) {
-							connected=false;
-							vc.habilitarConexion();
-							e1.printStackTrace();
 						}
-						} catch (IOException e) {
-							connected=false;
-							vc.habilitarConexion();
-							e.printStackTrace();
-						}
-						
-						
-			
+					} catch (ClassNotFoundException e1) {
+						connected = false;
+						vc.habilitarConexion();
+						e1.printStackTrace();
+
+					} catch (IOException e) {
+						connected = false;
+						vc.habilitarConexion();
+						e.printStackTrace();
+					}
 
 				}
 			}
 		}.start();
-		
+
 	}
-	
-	
+
 	public void enviarMensajeAlServidor(Mensaje m) {
-		
+
 		try {
-			
-			oos.writeObject(new Mensaje(usuario+"-> "+m.getMensaje()));//revisar
+
+			oos.writeObject(new Mensaje(usuario + "-> " + m.getMensaje()));// revisar
 		} catch (IOException e) {
-			connected=false;
+			connected = false;
 			vc.habilitarConexion();
 			e.printStackTrace();
 		}
@@ -147,20 +135,17 @@ public class Cliente {
 	}
 
 	public void enviarMensajeAlServidor(Usuario u) {
-	
+
 		try {
-			
-			
+
 			oos.writeObject(u);
-			
+
 		} catch (IOException e) {
-			connected=false;
+			connected = false;
 			vc.habilitarConexion();
 			e.printStackTrace();
 		}
 
 	}
-	
-	
 
 }

@@ -39,9 +39,9 @@ public class ConnectionSQL {
 
 			e.printStackTrace();
 		}
-		System.out.println("Conexion creada correctamente a la base de datos MySQL");
-		MainServidor.vs.getTa().setText(
-				MainServidor.vs.getTa().getText() + "Conexion creada correctamente a la base de datos MySQL" + "\n");
+		System.out.println("MySQL->Conexion creada correctamente a la base de datos MySQL");
+		MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText()
+				+ "MySQL->Conexion creada correctamente a la base de datos MySQL" + "\n");
 		return con;
 	}
 
@@ -71,26 +71,27 @@ public class ConnectionSQL {
 			if (!existe) {
 				st.executeUpdate("CREATE TABLE login (" + "id INT AUTO_INCREMENT, " + "PRIMARY KEY(id), "
 						+ "usuario VARCHAR(20), " + "password VARCHAR(20)) ");
-				System.out.println("Tabla de usuarios creada");
-				MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "Tabla de usuarios creada" + "\n");
-				String username="";
-				String password="";
-				for(int i = 0;i<GestionUsuarios.getProfiles().size();i++){
-					
-					if(i%2==0){
-						username=	GestionUsuarios.getProfiles().get(i);
-					}else{
+				System.out.println("MySQL->Tabla de usuarios creada");
+				MainServidor.vs.getTa()
+						.setText(MainServidor.vs.getTa().getText() + "MySQL->Tabla de usuarios creada" + "\n");
+				String username = "";
+				String password = "";
+				for (int i = 0; i < GestionUsuarios.getProfiles().size(); i++) {
+
+					if (i % 2 == 0) {
+						username = GestionUsuarios.getProfiles().get(i);
+					} else {
 						password = GestionUsuarios.getProfiles().get(i);
 						ConnectionSQL.addProfile(username, password);
-						password="";
-						username="";
+						password = "";
+						username = "";
 					}
-				
+
 				}
 			} else {
-				System.out.println("No se ha creado la tabla porque ya existe" + "\n");
+				System.out.println("MySQL->No se ha creado la tabla porque ya existe" + "\n");
 				MainServidor.vs.getTa().setText(
-						MainServidor.vs.getTa().getText() + "No se ha creado la tabla porque ya existe" + "\n");
+						MainServidor.vs.getTa().getText() + "MySQL->No se ha creado la tabla porque ya existe" + "\n");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -103,9 +104,9 @@ public class ConnectionSQL {
 		try {
 			st.executeUpdate("INSERT INTO login (" + "usuario, " + "password)" + "VALUES (" + "'" + username + "','"
 					+ password + "' )");
-			System.out.println("Se ha insertado el usuario " + username + " con su password");
-			MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "Se ha insertado el usuario " + username
-					+ " con su password" + "\n");
+			System.out.println("MySQL->Se ha insertado el usuario " + username + " con su password");
+			MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "MySQL->Se ha insertado el usuario "
+					+ username + " con su password" + "\n");
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -121,6 +122,30 @@ public class ConnectionSQL {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+
+	public static boolean hacerConsulta(String username, String password) {
+		String user, pwd;
+		try {
+			ResultSet rs = st.executeQuery("select * from login");
+			while (rs.next()) {
+				user = rs.getString(2);
+				pwd = rs.getString(3);
+				if (user.equals(username) && pwd.equals(password)) {
+					System.out.println("MySQL->Usuario aceptado " + username);
+					MainServidor.vs.getTa()
+							.setText(MainServidor.vs.getTa().getText() + "MySQL->Usuarios aceptado " + username + "\n");
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		System.out.println("MySQL->Usuario incorrecto " + username);
+		MainServidor.vs.getTa()
+				.setText(MainServidor.vs.getTa().getText() + "MySQL->Usuarios incorrecto " + username + "\n");
+		return false;
 
 	}
 }

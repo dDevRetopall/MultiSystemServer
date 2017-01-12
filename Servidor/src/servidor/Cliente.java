@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import javax.swing.JOptionPane;
 
 import comun.Comandos;
 import comun.Mensaje;
+import comun.PeticionDeLogin;
 import comun.Profile;
 import comun.Usuario;
 import comun.Usuarios;
@@ -72,6 +74,16 @@ public class Cliente {
 							System.out.println("Cerrando entrada...");
 							connected=false;
 							s.close();
+						}else if(o instanceof PeticionDeLogin){
+							System.out.println("Detectada una peticion de login");
+							PeticionDeLogin l = (PeticionDeLogin) o;
+							System.out.println("Consulta aceptada");
+							boolean resultado=ConnectionSQL.hacerConsulta(l.getUsername(), l.getPassword());
+							if(resultado){
+								enviarMensaje(new Comandos(true,true));
+							}else{
+								enviarMensaje(new Comandos(true,"Contraseña o usuario incorrecto"));
+							}
 						}else if(o instanceof Usuario){
 							System.out.println("USUARIO");
 							boolean estaEnListaNegra=false;
@@ -141,7 +153,15 @@ public class Cliente {
 						MainServidor.enviarMensajeATodos(MainServidor.u);
 						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
 						
+						
+						
+						}
 						connected=false;
+						try {
+							s.close();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
 						e.printStackTrace();
 						
@@ -151,11 +171,20 @@ public class Cliente {
 						MainServidor.enviarMensajeATodos(MainServidor.u);
 						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
 						
-						connected=false;
+						
 						
 						}
+						try {
+							s.close();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						connected=false;
+						
 						e.printStackTrace();
 					}
+					
 					
 					
 					

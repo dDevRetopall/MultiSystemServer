@@ -57,10 +57,15 @@ public class VentanaCliente extends JFrame{
 		scroll= new JScrollPane(ta);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		b.setEnabled(false);
-		b2.setEnabled(true);
+		
 		
 		registrarse.setForeground(Color.BLUE);
 		loguearte.setForeground(Color.BLUE);
+		
+		//-------------Cambiar------------\\
+			//	b2.setEnabled(true);
+				b2.setEnabled(false);
+		//---------------------------------\\
 		
 		p= new JPanel(new BorderLayout());
 		this.setContentPane(p);
@@ -83,8 +88,8 @@ public class VentanaCliente extends JFrame{
 		p3.add(loguearte);
 		
 		v = new VentanaUsuarios();
-		vr = new VentanaRegister();
-		vl = new VentanaLogin();
+		vr = new VentanaRegister(this);
+		vl = new VentanaLogin(this);
 		v.getTa().setText("No estas conectado");
 		
 		listaUsuarios.addMouseListener(new MouseAdapter() {

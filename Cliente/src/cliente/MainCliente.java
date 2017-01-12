@@ -13,7 +13,7 @@ import comun.Constantes;
 import comun.Mensaje;
 
 public class MainCliente {
-
+	
 	public static void main(String[] args) {
 		
 		try {
@@ -33,7 +33,7 @@ public class MainCliente {
 		}
 		
 	
-		VentanaCliente vc = new VentanaCliente();
+		 VentanaCliente vc = new VentanaCliente();
 		
 
 	}

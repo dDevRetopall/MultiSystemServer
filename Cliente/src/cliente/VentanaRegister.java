@@ -35,14 +35,15 @@ public class VentanaRegister extends JFrame{
 	JButton b = new JButton("Registrar!");
 
 	
-	public VentanaRegister() {
+	public VentanaRegister(VentanaCliente vc) {
 	
 		
-		this.setVisible(false);
+		
 		this.setSize(300, 200);
 		this.setResizable(false);                                            
 		this.setTitle("Registro");
-		this.setLocationRelativeTo(null);
+		this.setLocationRelativeTo(vc);
+		this.setVisible(false);
 		
 		username.setHorizontalAlignment(JTextField.CENTER);
 		password.setHorizontalAlignment(JTextField.CENTER);
