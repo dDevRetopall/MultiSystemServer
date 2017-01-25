@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -32,8 +33,9 @@ public class MainCliente {
 			e1.printStackTrace();
 		}
 		
-	
-		 VentanaCliente vc = new VentanaCliente();
+		String resultado=JOptionPane.showInputDialog("Introduce la IP a la que te quieres conectar", "localhost");
+		Constantes.HOST=resultado;
+		VentanaCliente vc = new VentanaCliente();
 		
 
 	}

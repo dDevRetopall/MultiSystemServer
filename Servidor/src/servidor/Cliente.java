@@ -104,7 +104,7 @@ public class Cliente {
 										System.out.println(ipUsuario+" DETECTADA");
 									}
 								}
-								System.out.println("ESTA EN LISTA NEGRA?? "+estaEnListaNegra);
+								System.out.println("ESTA EN LISTA NEGRA? "+estaEnListaNegra);
 								if(!estaEnListaNegra){
 								
 								System.out.println("NOMBRE USUARIOS RECIBIDO "+ u.getUsername());
@@ -225,11 +225,16 @@ public class Cliente {
 		
 		try {
 			
-			oos.writeObject(usuariosNombres);
+			
 			Iterator i = usuariosNombres.usuariosNombre.iterator();
+			System.out.println("Enviando a "+this.getUsuario()+" con la IP de "+this.getIpUsuario());
 			while(i.hasNext()){
 				System.out.println("->"+i.next());
+				
 			}
+			oos.writeObject(usuariosNombres);
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -252,8 +257,7 @@ public class Cliente {
 		}
 	}
 	public void ban() {
-		int respuesta=JOptionPane.showConfirmDialog(null, "Seguro que quieres banear a "+usuario+"con la ip "+ipUsuario);
-		if(respuesta==JOptionPane.YES_OPTION){
+		
 			System.out.println("BANEADA "+ipUsuario+" : "+usuario);
 		ListaNegra.ipaddress.add(this.getIpUsuario());
 		//ListaNegra.username.add(this.getUsuario());
@@ -267,7 +271,7 @@ public class Cliente {
 		}
 		}
 		
-	}
+	
 	public String getUsuario() {
 		return usuario;
 	}

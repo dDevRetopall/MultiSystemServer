@@ -45,16 +45,9 @@ public class VentanaLogin extends JFrame {
 
 	public VentanaLogin(VentanaCliente vc) {
 
+
 		this.vc = vc;
-		try {
-			s = new Socket(Constantes.HOST, Constantes.PORT);
-		} catch (UnknownHostException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+	
 
 		this.setSize(300, 200);
 		this.setResizable(false);
@@ -79,7 +72,24 @@ public class VentanaLogin extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				try {
+					s = new Socket(Constantes.HOST, Constantes.PORT);
+					 try {
+						 is = s.getInputStream();
+						 ois = new ObjectInputStream(is);
+						 os = s.getOutputStream();
+						 oos = new ObjectOutputStream(os);
+						 } catch (IOException e1) {
+						 // TODO Auto-generated catch block
+						 e1.printStackTrace();
+						 }
+				} catch (UnknownHostException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				VentanaLogin.this.setVisible(false);
 				String passwordString = "";
 				char chars[] = password.getPassword();
@@ -99,15 +109,7 @@ public class VentanaLogin extends JFrame {
 
 		this.setContentPane(p);
 
-		try {
-			is = s.getInputStream();
-			ois = new ObjectInputStream(is);
-			os = s.getOutputStream();
-			oos = new ObjectOutputStream(os);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		
 
 	}
 
@@ -117,9 +119,8 @@ public class VentanaLogin extends JFrame {
 			@Override
 			public void run() {
 				while (connected) {
-					System.out.println("sss");
-
 					try {
+						System.out.println("Se ha detectado algo");
 						Object o = ois.readObject();
 						if (o instanceof Comandos) {
 							Comandos c = (Comandos) o;

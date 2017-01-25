@@ -49,7 +49,7 @@ public class VentanaCliente extends JFrame{
 		
 		this.setSize(800, 500);
 		this.setLocationRelativeTo(null);
-		this.setTitle("Cliente");
+		this.setTitle("Cliente. Diego Berrocal");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		ta= new JTextArea(20,60);
@@ -63,13 +63,14 @@ public class VentanaCliente extends JFrame{
 		loguearte.setForeground(Color.BLUE);
 		
 		//-------------Cambiar------------\\
-			//	b2.setEnabled(true);
-				b2.setEnabled(false);
+				 // b2.setEnabled(true);
+					b2.setEnabled(false);
 		//---------------------------------\\
 		
 		p= new JPanel(new BorderLayout());
 		this.setContentPane(p);
-		te3.setText("localhost");
+		te3.setText(Constantes.HOST);
+		
 		p.add(p1,BorderLayout.NORTH);
 		p.add(p2,BorderLayout.CENTER);
 		p.add(p3,BorderLayout.SOUTH);
@@ -108,15 +109,20 @@ public class VentanaCliente extends JFrame{
 				
 				if(b2.isEnabled()){
 					super.mouseClicked(e);
-					Constantes.HOST=te3.getText();
-					v.getTa().setText("Usuarios"+"\n");
-					//Puerto.loadList();
+					if(!te2.getText().isEmpty()){
+						Constantes.HOST=te3.getText();
+						v.getTa().setText("Usuarios"+"\n");
+						//Puerto.loadList();
+						
+						c = new Cliente(te2.getText(),VentanaCliente.this);
+						c.enviarMensajeAlServidor(new Usuario(te2.getText()));
+						c.enviarMensajeAlServidor(new Mensaje(te2.getText(),true));
+						
+						b.setEnabled(true);
+					}else{
+						System.out.println("No te puedes conectar porque el campo de usuario esta vacio");
+					}
 					
-					c = new Cliente(te2.getText(),VentanaCliente.this);
-					c.enviarMensajeAlServidor(new Usuario(te2.getText()));
-					c.enviarMensajeAlServidor(new Mensaje(te2.getText(),true));
-					
-					b.setEnabled(true);
 				}
 			}
 

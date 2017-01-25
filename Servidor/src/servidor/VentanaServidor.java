@@ -48,7 +48,7 @@ public class VentanaServidor extends JFrame{
 		
 		this.setSize(800, 500);
 		this.setLocationRelativeTo(null);
-		this.setTitle("Servidor");
+		this.setTitle("Servidor. Diego Berrocal");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		ta= new JTextArea(20,60);
@@ -95,7 +95,7 @@ public class VentanaServidor extends JFrame{
 				if(respuesta == JOptionPane.YES_OPTION){
 					MainServidor.eliminarData();
 				}else{
-					MainServidor.buscarSocketYBanear(username.getText());
+					System.out.println("Se ha cancelado la ejecucion de la limpieza de mensajes e informacion");
 				}
 				
 			}

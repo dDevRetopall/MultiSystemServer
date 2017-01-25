@@ -1,8 +1,9 @@
 package servidor;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import comun.Profile;
 
 public class GestionUsuarios {
 	private static ArrayList<String> profiles = new ArrayList<>();
-
+	static String nombreArchivo="profiles.info";
 	public static void register(String username, String password) {
 		for (int i = 0; i < profiles.size(); i += 2) {
 			if (username.equals(profiles.get(i))) {
@@ -48,19 +49,25 @@ public class GestionUsuarios {
 		File archivo = null;
 		FileReader fr = null;
 		BufferedReader br = null;
-
+		System.out.println("Tratando de leer usuarios");
 		try {
 			// Apertura del fichero y creacion de BufferedReader para poder
 			// hacer una lectura comoda (disponer del metodo readLine()).
-			archivo = new File("profiles.info");
-			fr = new FileReader(archivo);
-			br = new BufferedReader(fr);
+			
+				archivo = new File(nombreArchivo);
+				if (archivo.exists()) {
+				fr = new FileReader(archivo);
+				br = new BufferedReader(fr);
 
-			// Lectura del fichero
-			String linea;
-			while ((linea = br.readLine()) != null) {
-				profiles.add(linea);
-				System.out.println(linea);
+				// Lectura del fichero
+				String linea;
+				while ((linea = br.readLine()) != null) {
+					profiles.add(linea);
+					System.out.println(linea);
+				}
+			}else{
+				System.out.println("Se ha creado un nuevo archivo porque no se encontraba");
+				archivo.createNewFile();
 			}
 		} catch (Exception e) {
 
@@ -72,12 +79,16 @@ public class GestionUsuarios {
 	public static ArrayList<String> getProfiles() {
 		return profiles;
 	}
+	public static void clear() {
+		profiles.clear();
+		System.out.println("Archivo vaciado");
+	}
 
-	private static void saveProfile(Profile p) {
+	public static void saveProfile(Profile p) {
 		try {
 			profiles.add(p.getUsername());
 			profiles.add(p.getPassword());
-			FileWriter fw = new FileWriter("profiles.info");
+			FileWriter fw = new FileWriter(nombreArchivo);
 			PrintWriter pw = new PrintWriter(fw);
 			System.out.println("Se esta guardando el la informacion");
 			for (String s : profiles) {
@@ -85,7 +96,8 @@ public class GestionUsuarios {
 			}
 			fw.close();
 			System.out.println("Completado..");
-			System.out.println("Se ha guardado el nuevo registro con usuario "+p.getUsername()+" y con password "+p.getPassword());
+			System.out.println("Se ha guardado el nuevo registro con usuario " + p.getUsername() + " y con password "
+					+ p.getPassword());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

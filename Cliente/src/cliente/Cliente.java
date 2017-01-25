@@ -77,16 +77,19 @@ public class Cliente {
 							Mensaje m = (Mensaje) o;
 							vc.getTa().setText(vc.getTa().getText() + m.getMensaje());
 						} else if (o instanceof Usuarios) {
+							System.out.println(o.getClass());
 							System.out.println("Detectado un usuario");
 							Usuarios usuarios = (Usuarios) o;
 							String usuarios1 = "";
+							System.out.println(usuarios.usuariosNombre.size());
 							Iterator i = usuarios.usuariosNombre.iterator();
 							while (i.hasNext()) {
-
-								usuarios1 = usuarios1 + i.next() + "\n";
+								String next= (String) i.next();
+								System.out.println("NEXT >> "+next);
+								usuarios1 = usuarios1 + next + "\n";
 								System.out.println(usuarios1);
 							}
-
+							
 							vc.getV().getTa().setText("Usuarios \n" + usuarios1);
 						} else if (o instanceof Comandos) {
 

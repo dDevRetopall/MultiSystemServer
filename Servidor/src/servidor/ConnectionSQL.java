@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import comun.Profile;
 
@@ -43,6 +44,61 @@ public class ConnectionSQL {
 		MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText()
 				+ "MySQL->Conexion creada correctamente a la base de datos MySQL" + "\n");
 		return con;
+	}
+
+	public static ArrayList<String> getUsuariosDeMySQL(Connection con) {
+		ResultSet rs;
+
+		ArrayList<String> datos = new ArrayList<>();
+		System.out.println("MySQL->Cogiendo informacion de la base de datos para sincronizar con el archivo." + "\n");
+		MainServidor.vs.getTa()
+		.setText(MainServidor.vs.getTa().getText() + "MySQL->Cogiendo informacion de la base de datos para sincronizar con el archivo" + "\n");
+		try {
+			rs = st.executeQuery("select * from login");
+			String user, pwd;
+			int posicion = 0;
+			while (rs.next()) {
+				user = rs.getString(2);
+				datos.add(user);
+				posicion++;
+				pwd = rs.getString(3);
+				datos.add(pwd);
+				posicion++;
+			}
+			System.out.println("MySQL->Datos cogidos correctamente" + "\n");
+			MainServidor.vs.getTa()
+					.setText(MainServidor.vs.getTa().getText() + "MySQL->Datos cogidos correctamente" + "\n");
+		} catch (SQLException e1) {
+			System.out.println("MySQL->Error cuando se intentaban coger los datos" + "\n");
+			MainServidor.vs.getTa()
+					.setText(MainServidor.vs.getTa().getText() + "MySQL->Error cuando se intentaban coger los datos" + "\n");
+			e1.printStackTrace();
+		}
+		return datos;
+	
+		
+		
+	
+	}
+
+	public static boolean existeTablaLogin(Connection con) {
+		ResultSet rs;
+		try {
+			st = con.createStatement();
+			DatabaseMetaData dbmd = con.getMetaData();
+			rs = dbmd.getTables(null, null, null, null);
+
+			while (rs.next()) {
+				String tabla = rs.getObject(3).toString();
+				if (tabla.equals("login")) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public static void createTable(Connection con) {
