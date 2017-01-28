@@ -2,6 +2,8 @@ package cliente;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -68,10 +70,10 @@ public class VentanaLogin extends JFrame {
 		p.add(p2);
 		p.add(p3);
 
-		b.addMouseListener(new MouseAdapter() {
-
+		b.addActionListener(new ActionListener() {
+			
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				try {
 					s = new Socket(Constantes.HOST, Constantes.PORT);
 					 try {
@@ -102,8 +104,9 @@ public class VentanaLogin extends JFrame {
 
 				username.setText("");
 				password.setText("");
-				super.mouseClicked(e);
+				
 			}
+		
 
 		});
 

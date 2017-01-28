@@ -2,6 +2,8 @@ package cliente;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -59,11 +61,10 @@ public class VentanaRegister extends JFrame{
 		p.add(p2);
 		p.add(p3);
 		
-		b.addMouseListener(new MouseAdapter() {
-
+		b.addActionListener(new ActionListener() {
+			
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				
+			public void actionPerformed(ActionEvent e) {
 				VentanaRegister.this.setVisible(false);
 				String passwordString="";
 				char chars[]=password.getPassword();
@@ -76,9 +77,8 @@ public class VentanaRegister extends JFrame{
 				
 				username.setText("");
 				password.setText("");
-				super.mouseClicked(e);
+				
 			}
-			
 		});
 		
 		this.setContentPane(p);

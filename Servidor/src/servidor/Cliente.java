@@ -225,14 +225,15 @@ public class Cliente {
 		
 		try {
 			
-			
+			oos.writeObject(usuariosNombres);
 			Iterator i = usuariosNombres.usuariosNombre.iterator();
 			System.out.println("Enviando a "+this.getUsuario()+" con la IP de "+this.getIpUsuario());
 			while(i.hasNext()){
 				System.out.println("->"+i.next());
 				
 			}
-			oos.writeObject(usuariosNombres);
+	
+			
 			
 			
 		} catch (IOException e) {

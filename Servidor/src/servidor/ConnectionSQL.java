@@ -3,11 +3,15 @@ package servidor;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
+
 
 import comun.Profile;
 
@@ -46,61 +50,103 @@ public class ConnectionSQL {
 		return con;
 	}
 
-	public static ArrayList<String> getUsuariosDeMySQL(Connection con) {
-		ResultSet rs;
-
-		ArrayList<String> datos = new ArrayList<>();
-		System.out.println("MySQL->Cogiendo informacion de la base de datos para sincronizar con el archivo." + "\n");
-		MainServidor.vs.getTa()
-		.setText(MainServidor.vs.getTa().getText() + "MySQL->Cogiendo informacion de la base de datos para sincronizar con el archivo" + "\n");
-		try {
-			rs = st.executeQuery("select * from login");
-			String user, pwd;
-			int posicion = 0;
-			while (rs.next()) {
-				user = rs.getString(2);
-				datos.add(user);
-				posicion++;
-				pwd = rs.getString(3);
-				datos.add(pwd);
-				posicion++;
-			}
-			System.out.println("MySQL->Datos cogidos correctamente" + "\n");
-			MainServidor.vs.getTa()
-					.setText(MainServidor.vs.getTa().getText() + "MySQL->Datos cogidos correctamente" + "\n");
-		} catch (SQLException e1) {
-			System.out.println("MySQL->Error cuando se intentaban coger los datos" + "\n");
-			MainServidor.vs.getTa()
-					.setText(MainServidor.vs.getTa().getText() + "MySQL->Error cuando se intentaban coger los datos" + "\n");
-			e1.printStackTrace();
-		}
-		return datos;
 	
-		
-		
+	//////////////////////Settings////////////////////////////	
 	
-	}
-
-	public static boolean existeTablaLogin(Connection con) {
-		ResultSet rs;
+	public static void createTableForSettings(Connection con){
+		//incluye contraseña de administrador ,puerto
 		try {
+
 			st = con.createStatement();
+			// ResultSet ts = st.executeQuery("select * from login");
+			// ResultSetMetaData rsmd= ts.getMetaData();
 			DatabaseMetaData dbmd = con.getMetaData();
-			rs = dbmd.getTables(null, null, null, null);
-
+			ResultSet rs = dbmd.getTables(null, null, null, null);
+			boolean existe = false;
 			while (rs.next()) {
 				String tabla = rs.getObject(3).toString();
-				if (tabla.equals("login")) {
-					return true;
+				if (tabla.equals("settings")) {
+					existe = true;
 				}
+			}
+
+			// st.executeUpdate(
+			// "SELECT * FROM INFORMATION_SCHEMA.TABLES"+
+			//
+			// "WHERE TABLE_SCHEMA = '"+"dbo"+"' AND TABLE_NAME =
+			// '"+"login"+"'");
+			//
+			if (!existe) {
+				st.executeUpdate("CREATE TABLE settings (" + "id INT AUTO_INCREMENT, " + "PRIMARY KEY(id), "
+						+ "nombreAjuste VARCHAR(20), " + "informacion VARCHAR(20)) ");
+				System.out.println("MySQL->Tabla de usuarios creada");
+				MainServidor.vs.getTa()
+						.setText(MainServidor.vs.getTa().getText() + "MySQL->Tabla de usuarios creada" + "\n");
+				addSetting("passAdmin", "default");
+				
+			} else {
+				System.out.println("MySQL->No se ha creado la tabla porque ya existe" + "\n");
+				MainServidor.vs.getTa().setText(
+						MainServidor.vs.getTa().getText() + "MySQL->No se ha creado la tabla porque ya existe" + "\n");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
 	}
+	public static boolean hacerConsultaDeSetting(String idSetting, String informacion) {
+		String id, data;
+		try {
+			ResultSet rs = st.executeQuery("select * from settings");
+			while (rs.next()) {
+				id = rs.getString(2);
+				data = rs.getString(3);
+				if (id.equals(idSetting) && data.equals(informacion)) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 
+	}
+	public static void editSetting(Connection con,String id, String data) {
+		try {
+			PreparedStatement ps;
+			String sql = "UPDATE settings SET nombreAjuste=?, informacion=? WHERE id=?;";
+			ps = con.prepareStatement(sql);
+			ps.setString(1,id);
+			ps.setString(2,data);
+			ps.setInt(3,1);
+			ps.executeUpdate();
+			System.out.println("MySQL->Se ha editado el ajuste " + id + " con su informacion");
+			MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "MySQL->Se ha editado el ajuste "
+					+ id + " con su informacion" + "\n");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}	
+	public static void addSetting(String id, String data) {
+		try {
+			st.executeUpdate("INSERT INTO settings (" + "nombreAjuste, " + "informacion)" + "VALUES (" + "'" + id + "','"
+					+ data + "' )");
+			System.out.println("MySQL->Se ha insertado el ajuste " + id + " con su informacion");
+			MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "MySQL->Se ha insertado el ajuste "
+					+ id + " con su informacion" + "\n");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}	
+		
+	//////////////////////Login////////////////////////////	
+		
 	public static void createTable(Connection con) {
 
 		try {
@@ -155,7 +201,61 @@ public class ConnectionSQL {
 		}
 
 	}
+	public static ArrayList<String> getUsuariosDeMySQL(Connection con) {
+		ResultSet rs;
 
+		ArrayList<String> datos = new ArrayList<>();
+		System.out.println("MySQL->Cogiendo informacion de la base de datos para sincronizar con el archivo." + "\n");
+		MainServidor.vs.getTa()
+		.setText(MainServidor.vs.getTa().getText() + "MySQL->Cogiendo informacion de la base de datos para sincronizar con el archivo" + "\n");
+		try {
+			rs = st.executeQuery("select * from login");
+			String user, pwd;
+			int posicion = 0;
+			while (rs.next()) {
+				user = rs.getString(2);
+				datos.add(user);
+				posicion++;
+				pwd = rs.getString(3);
+				datos.add(pwd);
+				posicion++;
+			}
+			System.out.println("MySQL->Datos cogidos correctamente" + "\n");
+			MainServidor.vs.getTa()
+					.setText(MainServidor.vs.getTa().getText() + "MySQL->Datos cogidos correctamente" + "\n");
+		} catch (SQLException e1) {
+			System.out.println("MySQL->Error cuando se intentaban coger los datos" + "\n");
+			MainServidor.vs.getTa()
+					.setText(MainServidor.vs.getTa().getText() + "MySQL->Error cuando se intentaban coger los datos" + "\n");
+			e1.printStackTrace();
+		}
+		return datos;
+	
+		
+		
+	
+	}
+
+	public static boolean existeTablaLogin(Connection con) {
+		ResultSet rs;
+		try {
+			st = con.createStatement();
+			DatabaseMetaData dbmd = con.getMetaData();
+			rs = dbmd.getTables(null, null, null, null);
+
+			while (rs.next()) {
+				String tabla = rs.getObject(3).toString();
+				if (tabla.equals("login")) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public static void addProfile(String username, String password) {
 		try {
 			st.executeUpdate("INSERT INTO login (" + "usuario, " + "password)" + "VALUES (" + "'" + username + "','"

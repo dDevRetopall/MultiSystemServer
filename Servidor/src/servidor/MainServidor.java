@@ -32,7 +32,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -50,9 +53,13 @@ public class MainServidor {
 	static VentanaServidor vs;
 	static ServerSocket sc;
 	static ArrayList<Cliente> clientes = new ArrayList<>();
+    static Connection con;
 
 	public static void main(String[] args) {
+		
 
+		
+		
 		u = new Usuarios();
 
 		// Pongo la interfaz de WINDOWS 10
@@ -94,6 +101,45 @@ public class MainServidor {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		 con = ConnectionSQL.getConnection();
+		//******************************************//
+				//Contraseña administrador
+				
+				ConnectionSQL.createTableForSettings(con);
+				JPanel panel = new JPanel();
+				JLabel label = new JLabel("Enter a password:");
+				JPasswordField pass = new JPasswordField(10);
+				panel.add(label);
+				panel.add(pass);
+				String[] options = new String[]{"OK", "Cancel"};
+				int option = JOptionPane.showOptionDialog(null, panel, "Password to enter the server",
+				                         JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
+				                         null, options, panel);
+				if(option == 0) // pressing OK button
+				{
+				    char[] password = pass.getPassword();
+				    String passwordCompleta = "";
+				    for(int i =0;i<password.length;i++){
+				    	passwordCompleta =passwordCompleta+password[i];
+				    	
+				    }
+				  boolean resultado=  ConnectionSQL.hacerConsultaDeSetting("passAdmin", passwordCompleta);
+				  if(!resultado){
+					  System.out.println("Contraseña incorrecta");
+					  MainServidor.vs.getTa().setText(
+								MainServidor.vs.getTa().getText() + "MySQL->Contraseña incorrecta" + "\n");
+					  System.exit(0);
+				  }else{
+					  System.out.println("Contraseña aprobada");
+					  MainServidor.vs.getTa().setText(
+					MainServidor.vs.getTa().getText() + "MySQL->Contraseña aprobada" + "\n");
+				  }
+				    
+				}else{
+					System.exit(0);
+				}
+				
+				//******************************************//
 
 		t2 = new Thread(new Runnable() {
 
@@ -111,10 +157,10 @@ public class MainServidor {
 						// socket
 						// que se ha aceptado
 						for (Cliente c2 : clientes) {
-							if (c2.connected) {
+							if (c2.connected && !c2.getUsuario().isEmpty()) {
 								if (s.getInetAddress().getHostAddress()
 										.equals(c2.s.getInetAddress().getHostAddress())) {
-
+									
 									// s.close();
 
 									System.out.println("Ya hay un cliente corriendo en esa ip");
@@ -168,7 +214,7 @@ public class MainServidor {
 
 		// Envio el array de usuarios a todos
 		for (Cliente c : clientes) {
-			System.out.println("Enviando lista de usuarios a "+c.getUsuario());
+			System.out.println("Tratando de enviar lista de usuarios a "+c.getUsuario());
 			c.enviarMensaje(usuariosNombres);
 
 		}
@@ -304,12 +350,11 @@ public class MainServidor {
 	}
 
 	public static void crearMySQL() {
-
+		Connection con = ConnectionSQL.getConnection();
 		// Se sincronizan el archivo donde se guardan las cuentas(profiles.info)
 		GestionUsuarios.loadProfiles();
 
-		// Se crea un conexion a la base de datos
-		Connection con = ConnectionSQL.getConnection();
+		
 
 		// Se intenta crear una tabla si esta no existe
 		// Si no existe se intenta rellenar con los datos de las cuentas locales
