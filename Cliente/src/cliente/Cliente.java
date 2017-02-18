@@ -76,6 +76,7 @@ public class Cliente {
 							System.out.println("Detectado un mensaje");
 							Mensaje m = (Mensaje) o;
 							vc.getTa().setText(vc.getTa().getText() + m.getMensaje());
+							vc.scroll.getVerticalScrollBar().setValue(vc.scroll.getVerticalScrollBar().getMaximum());
 						} else if (o instanceof Usuarios) {
 							System.out.println(o.getClass());
 							System.out.println("Detectado un usuario");

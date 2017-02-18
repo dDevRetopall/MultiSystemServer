@@ -229,53 +229,51 @@ public class MainServidor {
 
 		/// Saltar de linea
 		int longitudMax = 50;
+		String mensajeFinal="";
 		String mensajeSimplificado = "";
 		String prefijoServidor = "<Server>";
 		if (m.getMensaje().length()+prefijoServidor.length()*2+strDate.length() > longitudMax) {
 			int espacios = (int) (m.getMensaje().length() / longitudMax);
-			if(espacios==0){
-				vs.getTa().setText(vs.getTa().getText() + strDate +"  "+ prefijoServidor + "\n");
-				vs.getTa().setText(vs.getTa().getText() + m.getMensaje() +"\n");
+			if(esMensajeDeServidor){
+				vs.getTa().setText(vs.getTa().getText() + strDate + "  "+ prefijoServidor + "\n");
+				mensajeFinal=mensajeFinal+strDate+"  "+prefijoServidor+"\n";
+			}else{
+				vs.getTa().setText(vs.getTa().getText() + strDate + "\n");
+				mensajeFinal=mensajeFinal+strDate+"\n";
 			}
 			for (int i = 1; i <= espacios; i++) {
-				if (i == 1) {
-					if (esMensajeDeServidor) {
-						vs.getTa().setText(vs.getTa().getText() + strDate + "  " + prefijoServidor + "\n");
-					}
-
-					mensajeSimplificado = m.getMensaje().substring(0, i * longitudMax);
-					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
-				} else if (i > 1 && i < espacios) {
-					mensajeSimplificado = m.getMensaje().substring((i - 1) * longitudMax, i * longitudMax);
-					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
-					System.out.println(i * longitudMax);
-				} else if (i == espacios) {
-					System.out.println("ss");
-					mensajeSimplificado = m.getMensaje().substring((i - 1) * longitudMax, i * longitudMax);
-					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
-					mensajeSimplificado = m.getMensaje().substring((i) * longitudMax, m.getMensaje().length());
-					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
-				}
-
+				mensajeSimplificado = m.getMensaje().substring((i-1)*longitudMax,i*longitudMax);
+				vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado+"\n");
+				mensajeFinal=mensajeFinal+mensajeSimplificado+"\n";
 			}
-			vs.getTa().setText(vs.getTa().getText() + prefijoServidor + "\n");
+			System.out.println("ss");
+			mensajeSimplificado=m.getMensaje().substring(longitudMax*espacios, m.getMensaje().length());
+			
+			if(esMensajeDeServidor){
+				vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado+"   "+prefijoServidor+"\n");
+				mensajeFinal=mensajeFinal+mensajeSimplificado+"  "+prefijoServidor+"\n";
+			}else{
+				vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado+"   "+prefijoServidor+"\n");
+				mensajeFinal=mensajeFinal+mensajeSimplificado+"\n";
+			}
+			
+			
 		} else {
 			vs.getTa().setText(vs.getTa().getText() + strDate + "  " + prefijoServidor+"  "+m.getMensaje() +"  "+ prefijoServidor+"\n");
-
+			mensajeFinal=mensajeFinal+strDate + "  " + prefijoServidor+"  "+m.getMensaje() +"  "+ prefijoServidor+"\n";
 		}
 
 		// que baje automaticamente la barra
 		vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
 		// formatea el mensaje
-		Mensaje m2 = new Mensaje(strDate + "  " + m.getMensaje() + "\n");
-
+		
 		// Guardo ese mensaje en la data temporal para cuando se conecte otro
 		// cliente pueda ver los otros mensajes
-		Loader.mensajes.add(m2);
+		Loader.mensajes.add(new Mensaje(mensajeFinal));
 
 		// Envio el mensaje formateado a todos los clientes
 		for (Cliente c : clientes) {
-			c.enviarMensaje(m2);
+			c.enviarMensaje(new Mensaje(mensajeFinal));
 
 		}
 	}
