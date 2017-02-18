@@ -19,11 +19,18 @@
 
 package servidor;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +40,7 @@ import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -53,13 +61,11 @@ public class MainServidor {
 	static VentanaServidor vs;
 	static ServerSocket sc;
 	static ArrayList<Cliente> clientes = new ArrayList<>();
-    static Connection con;
+	static Connection con;
+	static InetAddress localHost = null;
 
 	public static void main(String[] args) {
-		
 
-		
-		
 		u = new Usuarios();
 
 		// Pongo la interfaz de WINDOWS 10
@@ -91,55 +97,80 @@ public class MainServidor {
 			// Abro una ventana del Servidor
 			vs = new VentanaServidor();
 
-			// Inicializo la conexion con la base de datos MySQL
-			crearMySQL();
+			try {
+				localHost = InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+				System.out.println("Unknown hot exception");
+				e.printStackTrace();
 
-			vs.getTa().setText(vs.getTa().getText() + "Servidor ejecutando" + "\n");
-			System.out.println("Servidor ejecutando");
+			}
+
+			vs.addWindowListener(new WindowAdapter() {
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+					Servidores.eliminarServidor(con, MainServidor.localHost.getHostAddress());
+
+				}
+
+			});
+
+			// Se conecta a la base de datos
+			con = ConnectionSQL.getConnection();
 
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			vs.dispatchEvent(new WindowEvent(vs, WindowEvent.WINDOW_CLOSING));
+			System.exit(0);
 		}
-		 con = ConnectionSQL.getConnection();
-		//******************************************//
-				//Contraseña administrador
-				
-				ConnectionSQL.createTableForSettings(con);
-				JPanel panel = new JPanel();
-				JLabel label = new JLabel("Enter a password:");
-				JPasswordField pass = new JPasswordField(10);
-				panel.add(label);
-				panel.add(pass);
-				String[] options = new String[]{"OK", "Cancel"};
-				int option = JOptionPane.showOptionDialog(null, panel, "Password to enter the server",
-				                         JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE,
-				                         null, options, panel);
-				if(option == 0) // pressing OK button
-				{
-				    char[] password = pass.getPassword();
-				    String passwordCompleta = "";
-				    for(int i =0;i<password.length;i++){
-				    	passwordCompleta =passwordCompleta+password[i];
-				    	
-				    }
-				  boolean resultado=  ConnectionSQL.hacerConsultaDeSetting("passAdmin", passwordCompleta);
-				  if(!resultado){
-					  System.out.println("Contraseña incorrecta");
-					  MainServidor.vs.getTa().setText(
-								MainServidor.vs.getTa().getText() + "MySQL->Contraseña incorrecta" + "\n");
-					  System.exit(0);
-				  }else{
-					  System.out.println("Contraseña aprobada");
-					  MainServidor.vs.getTa().setText(
-					MainServidor.vs.getTa().getText() + "MySQL->Contraseña aprobada" + "\n");
-				  }
-				    
-				}else{
-					System.exit(0);
-				}
-				
-				//******************************************//
+
+		// ******************************************//
+		// Contraseña administrador
+
+		ConnectionSQL.createTableForSettings(con);
+
+		JPanel panel = new JPanel();
+		JLabel label = new JLabel("Enter a password:");
+		JPasswordField pass = new JPasswordField(10);
+		panel.add(label);
+		panel.add(pass);
+		String[] options = new String[] { "OK", "Cancel" };
+		int option = JOptionPane.showOptionDialog(null, panel, "Password to enter the server", JOptionPane.NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, panel);
+		if (option == 0) // pressing OK button
+		{
+			char[] password = pass.getPassword();
+			String passwordCompleta = "";
+			for (int i = 0; i < password.length; i++) {
+				passwordCompleta = passwordCompleta + password[i];
+
+			}
+			boolean resultado = ConnectionSQL.hacerConsultaDeSetting("passAdmin", passwordCompleta);
+			if (!resultado) {
+				System.out.println("Contraseña incorrecta");
+				escribirEnServidorMensajeDeMySQL("Contraseña incorrecta");
+				vs.dispatchEvent(new WindowEvent(vs, WindowEvent.WINDOW_CLOSING));
+				System.exit(0);
+			} else {
+				System.out.println("Contraseña aprobada");
+				escribirEnServidorMensajeDeMySQL("Contraseña aprobada");
+			}
+
+		} else {
+			vs.dispatchEvent(new WindowEvent(vs, WindowEvent.WINDOW_CLOSING));
+			System.exit(0);
+		}
+
+		// ******************************************//
+		// Añado Servidor
+		Servidores.añadirServidor(con);
+
+		// Inicializo la conexion con la base de datos MySQL
+		cargarMySQL();
+
+		escribirEnServidorMensajeDeMySQL("Servidor ejecutando");
+		System.out.println("Servidor ejecutando");
 
 		t2 = new Thread(new Runnable() {
 
@@ -160,7 +191,7 @@ public class MainServidor {
 							if (c2.connected && !c2.getUsuario().isEmpty()) {
 								if (s.getInetAddress().getHostAddress()
 										.equals(c2.s.getInetAddress().getHostAddress())) {
-									
+
 									// s.close();
 
 									System.out.println("Ya hay un cliente corriendo en esa ip");
@@ -186,7 +217,7 @@ public class MainServidor {
 
 	}
 
-	public static void enviarMensajeATodos(Mensaje m) {
+	public static void enviarMensajeATodos(Mensaje m, boolean esMensajeDeServidor) {
 
 		// Los mensajes de texto les pongo cuando se han enviado con un prefijo
 		// y sufijo especial
@@ -195,7 +226,46 @@ public class MainServidor {
 		Date now = new Date();
 
 		String strDate = sdfDate.format(now);
-		vs.getTa().setText(vs.getTa().getText() + strDate + "  " + m.getMensaje() + "\n");
+
+		/// Saltar de linea
+		int longitudMax = 50;
+		String mensajeSimplificado = "";
+		String prefijoServidor = "<Server>";
+		if (m.getMensaje().length()+prefijoServidor.length()*2+strDate.length() > longitudMax) {
+			int espacios = (int) (m.getMensaje().length() / longitudMax);
+			if(espacios==0){
+				vs.getTa().setText(vs.getTa().getText() + strDate +"  "+ prefijoServidor + "\n");
+				vs.getTa().setText(vs.getTa().getText() + m.getMensaje() +"\n");
+			}
+			for (int i = 1; i <= espacios; i++) {
+				if (i == 1) {
+					if (esMensajeDeServidor) {
+						vs.getTa().setText(vs.getTa().getText() + strDate + "  " + prefijoServidor + "\n");
+					}
+
+					mensajeSimplificado = m.getMensaje().substring(0, i * longitudMax);
+					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
+				} else if (i > 1 && i < espacios) {
+					mensajeSimplificado = m.getMensaje().substring((i - 1) * longitudMax, i * longitudMax);
+					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
+					System.out.println(i * longitudMax);
+				} else if (i == espacios) {
+					System.out.println("ss");
+					mensajeSimplificado = m.getMensaje().substring((i - 1) * longitudMax, i * longitudMax);
+					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
+					mensajeSimplificado = m.getMensaje().substring((i) * longitudMax, m.getMensaje().length());
+					vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado + "\n");
+				}
+
+			}
+			vs.getTa().setText(vs.getTa().getText() + prefijoServidor + "\n");
+		} else {
+			vs.getTa().setText(vs.getTa().getText() + strDate + "  " + prefijoServidor+"  "+m.getMensaje() +"  "+ prefijoServidor+"\n");
+
+		}
+
+		// que baje automaticamente la barra
+		vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
 		// formatea el mensaje
 		Mensaje m2 = new Mensaje(strDate + "  " + m.getMensaje() + "\n");
 
@@ -210,11 +280,22 @@ public class MainServidor {
 		}
 	}
 
+	public static void escribirEnServidorMensajeDeMySQL(String mensaje) {
+
+		vs.getTa().setText(vs.getTa().getText() + "MySQL-> " + mensaje + "\n");
+		vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
+	}
+
+	public static void escribirEnServidorMensajeDeLimpieza(String mensaje) {
+		vs.getTa().setText("Limpieza-> " + mensaje + "\n");
+		vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
+	}
+
 	public static void enviarMensajeATodos(Usuarios usuariosNombres) {
 
 		// Envio el array de usuarios a todos
 		for (Cliente c : clientes) {
-			System.out.println("Tratando de enviar lista de usuarios a "+c.getUsuario());
+			System.out.println("Tratando de enviar lista de usuarios a " + c.getUsuario());
 			c.enviarMensaje(usuariosNombres);
 
 		}
@@ -253,23 +334,26 @@ public class MainServidor {
 		// Miro si empieza algun usuario con el texto que ha puesto el servidor
 		// para kickearle y luego banearle y no dejarle entrar en el servidor
 		// (Le elimino de todos los clientes y de las listas)
-		
+
 		int c2 = 0;
 		for (Cliente c : clientes) {
 			if (!c.getUsuario().isEmpty()) {
 				if (c.getUsuario().startsWith(username)) {
-					int respuesta=JOptionPane.showConfirmDialog(null, "Seguro que quieres banear a "+c.getUsuario()+"con la ip "+c.getIpUsuario());
-					if(respuesta==JOptionPane.YES_OPTION){
-					c.ban();
-					c.kick();
+					int respuesta = JOptionPane.showConfirmDialog(null,
+							"Seguro que quieres banear a " + c.getUsuario() + " con la ip " + c.getIpUsuario());
+					if (respuesta == JOptionPane.YES_OPTION) {
 
-					clientes.remove(c);
-					u.usuariosNombre.remove(c.getUsuario());
-					enviarMensajeATodos(u);
-					c2++;
-					break;// no obligatorio
+						c.kick();
+						c.ban();
+
+						clientes.remove(c);
+						u.usuariosNombre.remove(c.getUsuario());
+						enviarMensajeATodos(u);
+						c2++;
+						break;// no obligatorio
+					}
 				}
-			}}
+			}
 		}
 		if (c2 == 0) {
 			System.out.println("No se ha encontrado a esa persona para banearla");
@@ -290,7 +374,7 @@ public class MainServidor {
 		System.out.println(ip);
 		ListaNegra.ipaddress.remove(ip);
 		System.out.println("Se ha desbaneado a " + ip);
-		enviarMensajeATodos(new Mensaje(ip + " has been unbanned"));
+		enviarMensajeATodos(new Mensaje(ip + " has been unbanned"), false);
 		ListaNegra.saveList();
 
 	}
@@ -306,13 +390,11 @@ public class MainServidor {
 				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, botones, botones[0]);
 		if (respuesta == 1 /* Al Servidor */ ) {
 			vs.getTa().setText("Servidor ejecutando" + "\n");
-			System.out.println("Limpieza->Mensajes del Servidor limpiados");
-			MainServidor.vs.getTa()
-					.setText(MainServidor.vs.getTa().getText() + "Limpieza->Mensajes del Servidor limpiados " + "\n");
+			System.out.println();
+			escribirEnServidorMensajeDeLimpieza("Mensajes del Servidor limpiados");
 		}
 		System.out.println("Limpieza->Eliminando todos los mensajes");
-		MainServidor.vs.getTa()
-				.setText(MainServidor.vs.getTa().getText() + "Limpieza->Eliminando todos los mensajes" + "\n");
+		escribirEnServidorMensajeDeMySQL("Eliminando todos los mensajes");
 		Loader.mensajes.clear();
 
 		for (Cliente c : clientes) {
@@ -320,18 +402,15 @@ public class MainServidor {
 			c.enviarMensaje(new Mensaje("Se han limpiado todos los mensajes e informacion por el Servidor" + "\n"));
 			if (c.getUsuario().isEmpty()) {
 				System.out.println("Limpieza->Eliminando mensajes de un SOCKET");
-				MainServidor.vs.getTa().setText(
-						MainServidor.vs.getTa().getText() + "Limpieza->Eliminando mensajes de un SOCKET" + "\n");
+				escribirEnServidorMensajeDeMySQL("Eliminando mensajes de un socket");
 			} else {
 				System.out.println("Limpieza->Eliminando mensajes de " + c.getUsuario());
-				MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "Limpieza->Eliminando mensajes de "
-						+ c.getUsuario() + "\n");
+				escribirEnServidorMensajeDeMySQL("Eliminando mensajes de " + c.getUsuario());
 			}
 
 		}
 		System.out.println("Limpieza->Limpieza terminada correctamente");
-		MainServidor.vs.getTa()
-				.setText(MainServidor.vs.getTa().getText() + "Limpieza->Limpieza terminada correctamente" + "\n");
+		escribirEnServidorMensajeDeMySQL("Limpieza terminada correctamente");
 
 	}
 
@@ -349,12 +428,10 @@ public class MainServidor {
 		return false;
 	}
 
-	public static void crearMySQL() {
-		Connection con = ConnectionSQL.getConnection();
+	public static void cargarMySQL() {
+		// Connection con = ConnectionSQL.getConnection();
 		// Se sincronizan el archivo donde se guardan las cuentas(profiles.info)
 		GestionUsuarios.loadProfiles();
-
-		
 
 		// Se intenta crear una tabla si esta no existe
 		// Si no existe se intenta rellenar con los datos de las cuentas locales
@@ -377,15 +454,13 @@ public class MainServidor {
 			for (int i = 0; i < (datos.size()); i += 2) {
 
 				System.out.println("MySQL->Sincronizando " + (i + 1) + "/" + datos.size() + "\n");
-				MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "MySQL->Sincronizando " + (i + 1)
-						+ "/" + datos.size() + "\n");
+				escribirEnServidorMensajeDeMySQL("Sincronizando " + (i + 1) + "/" + datos.size());
 				System.out.println("MySQL->Sincronizando " + (i + 2) + "/" + datos.size() + "\n");
-				MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "MySQL->Sincronizando " + (i + 2)
-						+ "/" + datos.size() + "\n");
+				escribirEnServidorMensajeDeMySQL("Sincronizando " + (i + 2) + "/" + datos.size());
 				GestionUsuarios.saveProfile(new Profile(datos.get(i), datos.get(i + 1)));
 			}
 			System.out.println("MySQL->Datos sincronizados");
-			MainServidor.vs.getTa().setText(MainServidor.vs.getTa().getText() + "MySQL->Datos sincronizados" + "\n");
+			escribirEnServidorMensajeDeMySQL("Datos sincronizados");
 		}
 		// ConnectionSQL.close(con);
 	}

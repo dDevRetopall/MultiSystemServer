@@ -5,6 +5,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -14,7 +16,7 @@ import comun.Constantes;
 import comun.Mensaje;
 
 public class MainCliente {
-	
+	static VentanaDeServidores vs;
 	public static void main(String[] args) {
 		
 		try {
@@ -33,9 +35,16 @@ public class MainCliente {
 			e1.printStackTrace();
 		}
 		
-		String resultado=JOptionPane.showInputDialog("Introduce la IP a la que te quieres conectar", "localhost");
-		Constantes.HOST=resultado;
-		VentanaCliente vc = new VentanaCliente();
+		
+		Connection con=ConnectionSQLDangerous.getConnection();
+		ArrayList<String>data=ConnectionSQLDangerous.getDataOfServers(con);
+		vs = new VentanaDeServidores(con);
+		vs.rellenar(data);
+		vs.setVisible(true);
+//		String resultado=JOptionPane.showInputDialog("Introduce la IP a la que te quieres conectar", "localhost");
+//		Constantes.HOST=resultado;
+		
+		//
 		
 
 	}

@@ -64,7 +64,7 @@ public class Cliente {
 							if(connected){
 							Mensaje m =(Mensaje)o;
 							System.out.println(m.getMensaje());
-							MainServidor.enviarMensajeATodos(m);
+							MainServidor.enviarMensajeATodos(m,false);
 							}
 						}else if(o instanceof Profile){
 							System.out.println("Ha llegado una nueva peticion de registro!!!");
@@ -151,7 +151,7 @@ public class Cliente {
 						if(!Cliente.this.getUsuario().isEmpty()){
 						MainServidor.u.usuariosNombre.remove(Cliente.this.getUsuario());
 						MainServidor.enviarMensajeATodos(MainServidor.u);
-						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
+						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false),false);
 						
 						
 						
@@ -169,7 +169,7 @@ public class Cliente {
 						if(!Cliente.this.getUsuario().isEmpty()){
 						MainServidor.u.usuariosNombre.remove(Cliente.this.getUsuario());
 						MainServidor.enviarMensajeATodos(MainServidor.u);
-						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
+						MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false),false);
 						
 						
 						
@@ -246,8 +246,8 @@ public class Cliente {
 		try {
 			
 			System.out.println("Se ha kickeado a "+usuario);
-			MainServidor.enviarMensajeATodos(new Mensaje("Se ha kickeado a "+usuario));
-			MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false));
+			MainServidor.enviarMensajeATodos(new Mensaje("Se ha kickeado a "+usuario),false);
+			MainServidor.enviarMensajeATodos(new Mensaje(Cliente.this.getUsuario(),false),false);
 			
 			
 			s.close();
@@ -263,7 +263,7 @@ public class Cliente {
 		ListaNegra.ipaddress.add(this.getIpUsuario());
 		//ListaNegra.username.add(this.getUsuario());
 		System.out.println("Se ha baneado a "+getUsuario()+" con "+getIpUsuario());
-		MainServidor.enviarMensajeATodos(new Mensaje(getUsuario()+" has been banned"));
+		MainServidor.enviarMensajeATodos(new Mensaje(getUsuario()+" has been banned"),false);
 		enviarMensaje(new Comandos(true,true,"El servidor te ha baneado"));
 		Iterator i = ListaNegra.ipaddress.iterator();
 		ListaNegra.saveList();

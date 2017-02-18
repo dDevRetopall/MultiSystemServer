@@ -44,14 +44,13 @@ public class VentanaCliente extends JFrame{
 	JLabel registrarse = new JLabel("Registrarse");
 	JLabel loguearte = new JLabel("Login");
 	
-	public VentanaCliente(){
+	public VentanaCliente(String name){
 		
 		
 		this.setSize(800, 500);
 		this.setLocationRelativeTo(null);
-		this.setTitle("Cliente. Diego Berrocal");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		this.setTitle("Cliente "+name);
+		
 		ta= new JTextArea(20,60);
 		ta.setEditable(false);
 		scroll= new JScrollPane(ta);
