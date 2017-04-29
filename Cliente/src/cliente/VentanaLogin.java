@@ -76,6 +76,7 @@ public class VentanaLogin extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s = new Socket(Constantes.HOST, Constantes.PORT);
+					
 					 try {
 						 is = s.getInputStream();
 						 ois = new ObjectInputStream(is);

@@ -130,7 +130,7 @@ public class Cliente {
 								}
 							}else{
 								System.out.println("Enviando mensaje de q ya existe el usuario");
-								enviarMensaje(new Comandos(true,true,"Ya existe ese usuario"));
+								enviarMensaje(new Comandos(true,true,"Ese usuario esta ahora en el chat"));
 								MainServidor.enviarMensajeATodos(MainServidor.u);
 							/*	try {
 									Thread.sleep(40);

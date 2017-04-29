@@ -109,6 +109,7 @@ public class MainServidor {
 
 				@Override
 				public void windowClosing(WindowEvent e) {
+					System.out.println("Se esta cerrando la ventana");
 					Servidores.eliminarServidor(con, MainServidor.localHost.getHostAddress());
 
 				}
@@ -136,7 +137,7 @@ public class MainServidor {
 		panel.add(label);
 		panel.add(pass);
 		String[] options = new String[] { "OK", "Cancel" };
-		int option = JOptionPane.showOptionDialog(null, panel, "Password to enter the server", JOptionPane.NO_OPTION,
+		int option = JOptionPane.showOptionDialog(MainServidor.vs, panel, "Password to enter the server", JOptionPane.NO_OPTION,
 				JOptionPane.PLAIN_MESSAGE, null, options, panel);
 		if (option == 0) // pressing OK button
 		{
@@ -253,7 +254,7 @@ public class MainServidor {
 				vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado+"   "+prefijoServidor+"\n");
 				mensajeFinal=mensajeFinal+mensajeSimplificado+"  "+prefijoServidor+"\n";
 			}else{
-				vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado+"   "+prefijoServidor+"\n");
+				vs.getTa().setText(vs.getTa().getText() + mensajeSimplificado+"   "+"\n");
 				mensajeFinal=mensajeFinal+mensajeSimplificado+"\n";
 			}
 			
@@ -337,7 +338,7 @@ public class MainServidor {
 		for (Cliente c : clientes) {
 			if (!c.getUsuario().isEmpty()) {
 				if (c.getUsuario().startsWith(username)) {
-					int respuesta = JOptionPane.showConfirmDialog(null,
+					int respuesta = JOptionPane.showConfirmDialog(MainServidor.vs,
 							"Seguro que quieres banear a " + c.getUsuario() + " con la ip " + c.getIpUsuario());
 					if (respuesta == JOptionPane.YES_OPTION) {
 
@@ -384,7 +385,7 @@ public class MainServidor {
 		// se ha limpiado a todos los clientes
 		// y les borro todo lo que habia antes
 		String[] botones = { "A los clientes", "Al Servidor y clientes" };
-		int respuesta = JOptionPane.showOptionDialog(null, "A quien hacemos la limpieza de mensajes", "Advertencia",
+		int respuesta = JOptionPane.showOptionDialog(MainServidor.vs, "A quien hacemos la limpieza de mensajes", "Advertencia",
 				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, botones, botones[0]);
 		if (respuesta == 1 /* Al Servidor */ ) {
 			vs.getTa().setText("Servidor ejecutando" + "\n");

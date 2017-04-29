@@ -3,6 +3,7 @@ package servidor;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -65,8 +66,9 @@ public class VentanaServidor extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setTitle("Servidor");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		ta = new JTextArea(23, 60);
+		ta.setFont(new Font("Arial",Font.PLAIN,14));
 		ta.setEditable(false);
 		scroll = new JScrollPane(ta);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -88,7 +90,7 @@ public class VentanaServidor extends JFrame {
 		this.itmHistorialCancelar = new JMenuItem("Cancelar Edición");
 		this.itmHistorialBorrar = new JMenuItem("Borrar");
 		this.itmAyudaVer = new JMenuItem("Ver La Ayuda");
-		this.itmAyudaAcerca = new JMenuItem("Acerca de Calculadora");
+		this.itmAyudaAcerca = new JMenuItem("Acerca de la Aplicacion");
 
 		this.barraMenu.add(this.menuVer);
 		

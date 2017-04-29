@@ -21,7 +21,7 @@ public class Servidores {
 		String contadorAumentado = Integer.toString(contadorServidores);
 		ConnectionSQL.editSetting(con, "NumServidores", contadorAumentado, 2);
 		String pwd = "";
-		int option = JOptionPane.showConfirmDialog(null, "Desea poner password al Servidor");
+		int option = JOptionPane.showConfirmDialog(MainServidor.vs, "Desea poner password al Servidor");
 		if (option == JOptionPane.YES_OPTION) {
 			String p = JOptionPane.showInputDialog("Password del Servidor");
 			pwd = p;
@@ -41,13 +41,13 @@ public class Servidores {
 
 	public static void eliminarServidor(Connection con, String ipServer) {
 		try {
-
+			
 			String query = "delete from settings where ip = ?";
 			PreparedStatement preparedStmt = con.prepareStatement(query);
 			preparedStmt.setString(1, ipServer);
 
 			preparedStmt.executeUpdate();
-
+			System.out.println("Servidor eliminado");
 		} catch (Exception e) {
 			System.err.println("Got an exception! ");
 			System.err.println(e.getMessage());
