@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 
 import comun.Constantes;
 import comun.Profile;
+import utils.EncriptarPasswords;
 
 public class ConnectionSQL {
 	private static Statement st;
@@ -212,7 +213,7 @@ public class ConnectionSQL {
 			//
 			if (!existe) {
 				st.executeUpdate("CREATE TABLE login (" + "id INT AUTO_INCREMENT, " + "PRIMARY KEY(id), "
-						+ "usuario VARCHAR(20), " + "password VARCHAR(20)) ");
+						+ "usuario VARCHAR(20), " + "password VARCHAR(50)) ");
 				System.out.println("MySQL->Tabla de usuarios creada");
 				MainServidor.escribirEnServidorMensajeDeMySQL("Tabla de usuarios creada");
 				String username = "";
@@ -290,11 +291,12 @@ public class ConnectionSQL {
 	}
 
 	public static void addProfile(String username, String password) {
+		
 		try {
 			st.executeUpdate("INSERT INTO login (" + "usuario, " + "password)" + "VALUES (" + "'" + username + "','"
 					+ password + "' )");
-			System.out.println("MySQL->Se ha insertado el usuario " + username + " con su password");
-			MainServidor.escribirEnServidorMensajeDeMySQL("Se ha insertado el usuario " + username + " con su password");
+			System.out.println("MySQL->Se ha insertado el usuario " + username + " con su password encriptada "+password);
+			MainServidor.escribirEnServidorMensajeDeMySQL("Se ha insertado el usuario " + username + " con su password encriptada "+password);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -314,13 +316,16 @@ public class ConnectionSQL {
 	}
 
 	public static boolean hacerConsulta(String username, String password) {
+		String passwordEncriptada=EncriptarPasswords.encriptarPassword(password);
+		
 		String user, pwd;
 		try {
 			ResultSet rs = st.executeQuery("select * from login");
 			while (rs.next()) {
 				user = rs.getString(2);
 				pwd = rs.getString(3);
-				if (user.equals(username) && pwd.equals(password)) {
+				System.out.println(pwd+"  ->  "+passwordEncriptada);
+				if (user.equals(username) && pwd.equals(passwordEncriptada)) {
 					System.out.println("MySQL->Usuario aceptado " + username);
 					MainServidor.escribirEnServidorMensajeDeMySQL("Usuario aceptado " + username);
 					return true;

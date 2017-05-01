@@ -8,6 +8,9 @@ import java.awt.GridLayout;
 import java.awt.ScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +27,7 @@ import javax.swing.text.JTextComponent;
 import comun.Constantes;
 import comun.Mensaje;
 import comun.Usuario;
+
 
 public class VentanaCliente extends JFrame {
 	Cliente c;
@@ -106,7 +110,22 @@ public class VentanaCliente extends JFrame {
 		vr = new VentanaRegister(this);
 		vl = new VentanaLogin(this);
 		v.getTa().setText("No estas conectado");
-		
+		this.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Se esta cerrando la ventana");
+				try {
+					c.s.close();
+					
+				} catch (IOException e1) {
+					System.out.println("Error mientras se intentaba cerra la ventana");
+					e1.printStackTrace();
+				}
+
+			}
+
+		});
 		listaUsuarios.addMouseListener(new MouseAdapter() {
 
 			@Override

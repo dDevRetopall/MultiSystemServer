@@ -51,15 +51,10 @@ public class VentanaServidor extends JFrame {
 	JPanel p3 = new JPanel(new FlowLayout());
 	JPanel p;
 	JScrollPane scroll;
-	private JMenuBar barraMenu;
 
-	/* Declaro los JMenu */
-	private JMenu menuVer, menuEdicion, menuAyuda, menuHistorial;
 
-	/* Declaro todos los JMenuItem */
-	private JMenuItem itmEstandar, itmCientifica, itmCopiar, itmPegar, itmHistorialCopiar, itmHistorialEditar,
-			itmHistorialCancelar, itmHistorialBorrar, itmAyudaVer, itmAyudaAcerca;
-
+	
+	
 	public VentanaServidor() {
 
 		this.setSize(800, 600);
@@ -72,49 +67,7 @@ public class VentanaServidor extends JFrame {
 		ta.setEditable(false);
 		scroll = new JScrollPane(ta);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		barraMenu = new JMenuBar();
-
-		this.menuVer = new JMenu("Ver");
-		this.menuEdicion = new JMenu("Editar");
-		this.menuAyuda = new JMenu("Ayuda");
-		this.menuHistorial = new JMenu("Historial");
-
-		this.itmEstandar = new JMenuItem("Estandar");
-		this.itmCientifica = new JMenuItem("Cientifica");
-
-		this.itmCopiar = new JMenuItem("Copiar");
-		this.itmPegar = new JMenuItem("Pegar");
-
-		this.itmHistorialCopiar = new JMenuItem("Copiar Historial");
-		this.itmHistorialEditar = new JMenuItem("Editar");
-		this.itmHistorialCancelar = new JMenuItem("Cancelar Edición");
-		this.itmHistorialBorrar = new JMenuItem("Borrar");
-		this.itmAyudaVer = new JMenuItem("Ver La Ayuda");
-		this.itmAyudaAcerca = new JMenuItem("Acerca de la Aplicacion");
-
-		this.barraMenu.add(this.menuVer);
 		
-		this.menuVer.add(this.itmEstandar);
-		this.menuVer.add(this.itmCientifica);
-		
-		this.barraMenu.add(this.menuEdicion);
-		
-		this.menuEdicion.add(this.itmCopiar);
-		this.menuEdicion.add(this.itmPegar);
-		this.menuEdicion.add(this.menuHistorial);
-		
-		this.menuHistorial.add(this.itmHistorialCopiar);
-		this.menuHistorial.add(this.itmHistorialEditar);
-		this.menuHistorial.add(this.itmHistorialCancelar);
-		this.menuHistorial.add(this.itmHistorialBorrar);
-	
-		this.barraMenu.add(this.menuAyuda);
-		
-		this.menuAyuda.add(this.itmAyudaVer);
-		this.menuAyuda.add(this.itmAyudaAcerca);
-
-	
-		this.setJMenuBar(this.barraMenu);
 		
 		p = new JPanel(new BorderLayout());
 		this.setContentPane(p);
@@ -150,7 +103,7 @@ public class VentanaServidor extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				int respuesta = JOptionPane.showConfirmDialog(null, "Seguro que quieres borrar la DATA", "Advertencia",
+				int respuesta = JOptionPane.showConfirmDialog(MainServidor.vs, "Seguro que quieres borrar la DATA", "Advertencia",
 						JOptionPane.YES_NO_OPTION);
 				if (respuesta == JOptionPane.YES_OPTION) {
 					MainServidor.eliminarData();

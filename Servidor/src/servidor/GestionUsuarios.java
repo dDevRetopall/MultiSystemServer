@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import comun.Profile;
+import utils.EncriptarPasswords;
 
 public class GestionUsuarios {
 	private static ArrayList<String> profiles = new ArrayList<>();
@@ -25,8 +26,9 @@ public class GestionUsuarios {
 			}
 		}
 		System.out.println("Se ha conseguido registrarte");
-		ConnectionSQL.addProfile(username, password);
-		saveProfile(new Profile(username, password));
+		String passwordEncriptada=EncriptarPasswords.encriptarPassword(password);
+		ConnectionSQL.addProfile(username, passwordEncriptada);
+		saveProfile(new Profile(username, passwordEncriptada));
 	}
 
 	public static void login(String username, String password) {
