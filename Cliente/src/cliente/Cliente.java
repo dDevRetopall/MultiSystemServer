@@ -124,12 +124,23 @@ public class Cliente {
 		}.start();
 
 	}
+	public void enviarMensajeDeConexionAlServidor(Mensaje m){
 
+		try {
+
+			oos.writeObject(new Mensaje(m.getMensaje()));// revisar
+		} catch (IOException e) {
+			connected = false;
+			vc.habilitarConexion();
+			e.printStackTrace();
+		}
+
+	}
 	public void enviarMensajeAlServidor(Mensaje m) {
 
 		try {
 
-			oos.writeObject(new Mensaje(usuario + "-> " + m.getMensaje()));// revisar
+			oos.writeObject(new Mensaje(usuario + ": " + m.getMensaje()));// revisar
 		} catch (IOException e) {
 			connected = false;
 			vc.habilitarConexion();

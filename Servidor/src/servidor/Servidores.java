@@ -38,7 +38,7 @@ public class Servidores {
 		MainServidor.vs.setTitle("Servidor SV" + contadorServidores);
 
 	}
-
+	
 	public static void eliminarServidor(Connection con, String ipServer) {
 		try {
 			
