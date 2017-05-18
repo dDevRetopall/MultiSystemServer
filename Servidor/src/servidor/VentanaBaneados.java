@@ -17,7 +17,7 @@ public class VentanaBaneados extends JFrame{
 
 		this.setTitle("Baneados");
 		
-		this.setLocationRelativeTo(MainServidor.vs);
+		this.setLocationRelativeTo(null);
 
 		this.setContentPane(p);
 		ta.setEditable(false);

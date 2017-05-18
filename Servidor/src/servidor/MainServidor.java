@@ -67,9 +67,9 @@ public class MainServidor {
 	static InetAddress localHost = null;
 
 	public static void main(String[] args) {
-
+		
 		System.out.println("This program is made by Diego Berrocal. All right reserved");
-
+		
 		u = new Usuarios();
 
 		// Pongo la interfaz de Windows 10 o la de el sistema operativo que se
@@ -93,6 +93,11 @@ public class MainServidor {
 
 		try {
 
+			// Leo los settings del archivo inicial
+			FileUtils.readSettings();
+			System.out.println("Advanced mode is " + ConstantesServer.advanced);
+			escribirEnServidorMensajeDeSettings("Advanced mode is " + ConstantesServer.advanced);
+
 			// Leo del archivo todas las ips baneadas
 			ListaNegra.loadList();
 
@@ -101,20 +106,6 @@ public class MainServidor {
 
 			// Abro una ventana del Servidor
 			vs = new VentanaServidor();
-
-			// Leo los settings del archivo inicial
-			FileUtils.readSettings();
-			System.out.println("Advanced mode is " + ConstantesServer.advanced);
-			escribirEnServidorMensajeDeSettings("Advanced mode is " + ConstantesServer.advanced);
-			System.out.println("Anonymous mode is " + ConstantesServer.anonymous);
-			escribirEnServidorMensajeDeSettings("Anonymous mode is " + ConstantesServer.anonymous);
-			if (ConstantesServer.advancedSecurity) {
-				System.out.println("Security mode is high");
-				escribirEnServidorMensajeDeSettings("Security mode is high");
-			} else {
-				System.out.println("Security mode is medium");
-				escribirEnServidorMensajeDeSettings("Security mode is medium");
-			}
 
 			try {
 				localHost = InetAddress.getLocalHost();
@@ -182,15 +173,9 @@ public class MainServidor {
 			System.exit(0);
 		}
 
-		if (ConstantesServer.anonymous) {
-			vs.setTitle("Anonymous Server");
-		}
-
 		// ******************************************//
 		// Añado Servidor
-		if (!ConstantesServer.anonymous) {
-			Servidores.añadirServidor(con);
-		}
+		Servidores.añadirServidor(con);
 
 		// Inicializo la conexion con la base de datos MySQL
 		cargarMySQL();
@@ -217,20 +202,11 @@ public class MainServidor {
 							if (c2.connected && !c2.getUsuario().isEmpty()) {
 								if (s.getInetAddress().getHostAddress()
 										.equals(c2.s.getInetAddress().getHostAddress())) {
-									// Sistema de seguridad-Mejorar y activar
-									// cuando se pueda
-									if (ConstantesServer.advancedSecurity) {
-										
-										c2.connected=false;
-										s.close();
-										
-									}
+									//Sistema de seguridad-Mejorar y activar cuando se pueda
+									// s.close();
+
 									System.out.println("Ya hay un cliente corriendo en esa ip");
-									if (ConstantesServer.advancedSecurity) {
-										contador++;
-
-									}
-
+									// contador++;
 								}
 							}
 						}
@@ -339,15 +315,16 @@ public class MainServidor {
 	public static void escribirEnServidorMensajeDeSettings(String mensaje) {
 		// Si el setting avanzado esta activado
 		if (ConstantesServer.advanced) {
-			vs.getTa().setText(vs.getTa().getText() + "Settings-> " + mensaje + "\n");
-			vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
+			// vs.getTa().setText(vs.getTa().getText() + "Settings-> " + mensaje
+			// + "\n");
+			// vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
 		}
 	}
 
 	public static void escribirEnServidorMensajeDeLimpieza(String mensaje) {
 		// Si el setting avanzado esta activado
 		if (ConstantesServer.advanced) {
-			vs.getTa().setText(vs.getTa().getText() + "Limpieza-> " + mensaje + "\n");
+			vs.getTa().setText("Limpieza-> " + mensaje + "\n");
 			vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
 		}
 	}

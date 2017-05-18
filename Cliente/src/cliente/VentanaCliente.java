@@ -56,7 +56,7 @@ public class VentanaCliente extends JFrame {
 	public VentanaCliente(String name) {
 
 		
-		this.setSize(900, 500);
+		this.setSize(800, 500);
 		this.setLocationRelativeTo(null);
 		this.setTitle("Cliente " + name);
 		
@@ -105,7 +105,7 @@ public class VentanaCliente extends JFrame {
 		p3.add(listaUsuarios);
 		p3.add(loguearte);
 		
-		
+		this.pack();
 		v = new VentanaUsuarios();
 		vr = new VentanaRegister(this);
 		vl = new VentanaLogin(this);
@@ -170,7 +170,7 @@ public class VentanaCliente extends JFrame {
 
 						c = new Cliente(te2.getText(), VentanaCliente.this);
 						c.enviarMensajeAlServidor(new Usuario(te2.getText()));
-						c.enviarMensajeDeConexionAlServidor(new Mensaje(te2.getText(), true));
+						c.enviarMensajeAlServidor(new Mensaje(te2.getText(), true));
 
 						b.setEnabled(true);
 					} else {

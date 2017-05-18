@@ -62,7 +62,7 @@ public class VentanaDeServidores extends JFrame {
 	public VentanaDeServidores(Connection con) {
 		this.con = con;
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(900, 600);
+		this.setSize(800, 600);
 
 		this.setTitle("Servidores disponibles");
 		this.setContentPane(pPrincipal);
