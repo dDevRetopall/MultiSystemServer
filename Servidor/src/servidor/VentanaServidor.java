@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -25,6 +26,7 @@ import javax.swing.ScrollPaneConstants;
 import comun.Comandos;
 import comun.Constantes;
 import comun.Mensaje;
+import utils.ConstantesServer;
 
 public class VentanaServidor extends JFrame {
 	Cliente c;
@@ -40,40 +42,47 @@ public class VentanaServidor extends JFrame {
 	JButton listaUsuarios = new JButton("Lista de Usuarios");
 	JButton listaBaneados = new JButton("Lista de Baneados");
 	JButton b = new JButton("Enviar");
+	JButton info = new JButton("Show info");
 	JButton b2 = new JButton("Clear data");
 	JButton ban = new JButton("Ban");
 	JButton unban = new JButton("Unban");
 	JButton cambiarpwd = new JButton("Cambiar ");
 	JTextField pwd = new JTextField(10);
 	JLabel lpwd = new JLabel("Cambiar pwd server : ");
+	JLabel serverInfo = new JLabel("Version: "+ConstantesServer.version);
 	JPanel p1 = new JPanel(new FlowLayout());
 	JPanel p2 = new JPanel(new FlowLayout());
-	JPanel p3 = new JPanel(new FlowLayout());
+	JPanel p3 = new JPanel(new GridLayout(2, 1));
+	JPanel p5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	JPanel p4 = new JPanel(new FlowLayout());
 	JPanel p;
+	
 	JScrollPane scroll;
 
-
-	
-	
 	public VentanaServidor() {
 
 		this.setSize(800, 600);
 		this.setLocationRelativeTo(null);
 		this.setTitle("Servidor");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		ta = new JTextArea(23, 60);
-		ta.setFont(new Font("Arial",Font.PLAIN,14));
+		ta.setFont(new Font("Arial", Font.PLAIN, 14));
 		ta.setEditable(false);
 		scroll = new JScrollPane(ta);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		
-		
+		serverInfo.setFont(new Font("Sherif", Font.PLAIN, 10));
+
 		p = new JPanel(new BorderLayout());
 		this.setContentPane(p);
 		p.add(p1, BorderLayout.NORTH);
 		p.add(p2, BorderLayout.CENTER);
 		p.add(p3, BorderLayout.SOUTH);
+		p3.add(p4);
+		p3.add(p5);
+		p5.add(serverInfo);
+		p5.add(info);
+
 		p1.add(kick);
 
 		p1.add(username);
@@ -84,11 +93,23 @@ public class VentanaServidor extends JFrame {
 		p1.add(te);
 		p1.add(b);
 		p2.add(scroll);
-		p3.add(listaUsuarios);
-		p3.add(listaBaneados);
-		p3.add(lpwd);
-		p3.add(pwd);
-		p3.add(cambiarpwd);
+
+		p4.add(listaUsuarios);
+		p4.add(listaBaneados);
+		
+		p4.add(lpwd);
+		p4.add(pwd);
+		p4.add(cambiarpwd);
+		info.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				VentanaInfo i = new VentanaInfo();
+				i.setVisible(true);
+			}
+
+		});
 		listaUsuarios.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -103,8 +124,8 @@ public class VentanaServidor extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				int respuesta = JOptionPane.showConfirmDialog(MainServidor.vs, "Seguro que quieres borrar la DATA", "Advertencia",
-						JOptionPane.YES_NO_OPTION);
+				int respuesta = JOptionPane.showConfirmDialog(MainServidor.vs, "Seguro que quieres borrar la DATA",
+						"Advertencia", JOptionPane.YES_NO_OPTION);
 				if (respuesta == JOptionPane.YES_OPTION) {
 					MainServidor.eliminarData();
 				} else {
@@ -125,7 +146,7 @@ public class VentanaServidor extends JFrame {
 					JPasswordField pass = new JPasswordField(10);
 					panel.add(label);
 					panel.add(pass);
-					String[] options = new String[] { "OK", "Cancel" };
+					String[] options = new String[] { "Accept", "Cancel" };
 					int option = JOptionPane.showOptionDialog(null, panel, "Escribe la anterior contraseña",
 							JOptionPane.NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, panel);
 					if (option == 0) // pressing OK button
@@ -183,7 +204,7 @@ public class VentanaServidor extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				MainServidor.enviarMensajeATodos(new Mensaje(te.getText() ),true);
+				MainServidor.enviarMensajeATodos(new Mensaje(te.getText()), true);
 			}
 
 		});

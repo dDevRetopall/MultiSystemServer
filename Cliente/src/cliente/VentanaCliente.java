@@ -2,8 +2,10 @@ package cliente;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.ScrollPane;
 import java.awt.event.MouseAdapter;
@@ -28,7 +30,6 @@ import comun.Constantes;
 import comun.Mensaje;
 import comun.Usuario;
 
-
 public class VentanaCliente extends JFrame {
 	Cliente c;
 	VentanaUsuarios v;
@@ -52,20 +53,21 @@ public class VentanaCliente extends JFrame {
 	JScrollPane scroll2;
 	JLabel registrarse = new JLabel("Registrarse");
 	JLabel loguearte = new JLabel("Login");
-	boolean minimizado=true;
+	JButton desconectarse = new JButton("Desconectarse");
+	boolean minimizado = true;
+
 	public VentanaCliente(String name) {
 
-		
-		this.setSize(800, 500);
-		this.setLocationRelativeTo(null);
+		this.setSize(900, 500);
+		this.setLocationRelativeTo(MainCliente.vs);
 		this.setTitle("Cliente " + name);
-		
+
 		te = new JTextArea(1, 20);
-		te.setFont(new Font("Arial",Font.PLAIN,12));
+		te.setFont(new Font("Arial", Font.PLAIN, 12));
 		scroll2 = new JScrollPane(te);
 		scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		ta = new JTextArea(20, 60);
-		ta.setFont(new Font("Arial",Font.BOLD,12));
+		ta.setFont(new Font("Arial", Font.BOLD, 12));
 		ta.setEditable(false);
 		scroll = new JScrollPane(ta);
 		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -81,6 +83,7 @@ public class VentanaCliente extends JFrame {
 
 		p = new JPanel(new BorderLayout());
 		this.setContentPane(p);
+		desconectarse.setEnabled(false);
 		te3.setText(Constantes.HOST);
 
 		p.add(p1, BorderLayout.NORTH);
@@ -103,9 +106,9 @@ public class VentanaCliente extends JFrame {
 		p2.add(scroll);
 		p3.add(registrarse);
 		p3.add(listaUsuarios);
+		p3.add(desconectarse);
 		p3.add(loguearte);
-		
-		this.pack();
+
 		v = new VentanaUsuarios();
 		vr = new VentanaRegister(this);
 		vl = new VentanaLogin(this);
@@ -117,14 +120,37 @@ public class VentanaCliente extends JFrame {
 				System.out.println("Se esta cerrando la ventana");
 				try {
 					c.s.close();
-					
+
 				} catch (IOException e1) {
 					System.out.println("Error mientras se intentaba cerra la ventana");
 					e1.printStackTrace();
+				} catch (NullPointerException e2) {
+					VentanaCliente.this.setVisible(false);
+
 				}
 
 			}
 
+		});
+		desconectarse.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (desconectarse.isEnabled()) {
+					super.mouseClicked(e);
+					try {
+						cambiosComponentesAlDesconectarse();
+						c.s.close();
+
+					} catch (IOException e1) {
+						System.out.println("Error mientras se intentaba cerra la ventana");
+						e1.printStackTrace();
+					} catch (NullPointerException e2) {
+						System.out.println("Unexpected error (null)");
+
+					}
+				}
+			}
 		});
 		listaUsuarios.addMouseListener(new MouseAdapter() {
 
@@ -135,22 +161,23 @@ public class VentanaCliente extends JFrame {
 			}
 
 		});
+
 		agrandarArea.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(minimizado){
+				if (minimizado) {
 					te.setColumns(20);
 					te.setRows(5);
 					VentanaCliente.this.pack();
-					minimizado=false;
-				}else{
+					minimizado = false;
+				} else {
 					te.setColumns(20);
 					te.setRows(1);
 					VentanaCliente.this.pack();
-					minimizado=true;
-					}
-				
+					minimizado = true;
+				}
+
 				// scroll2 = new JScrollPane(te);
 				// scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 			}
@@ -170,9 +197,9 @@ public class VentanaCliente extends JFrame {
 
 						c = new Cliente(te2.getText(), VentanaCliente.this);
 						c.enviarMensajeAlServidor(new Usuario(te2.getText()));
-						c.enviarMensajeAlServidor(new Mensaje(te2.getText(), true));
+						c.enviarMensajeDeConexionAlServidor(new Mensaje(te2.getText(), true));
 
-						b.setEnabled(true);
+						cambiosComponentesAlConectarse();
 					} else {
 						System.out.println("No te puedes conectar porque el campo de usuario esta vacio");
 					}
@@ -181,6 +208,7 @@ public class VentanaCliente extends JFrame {
 			}
 
 		});
+
 		b.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -200,24 +228,43 @@ public class VentanaCliente extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				vr.setVisible(true);
-				vr.setLocationRelativeTo(VentanaCliente.this);
+				if (registrarse.isEnabled()) {
+					vr.setVisible(true);
+					vr.setLocationRelativeTo(VentanaCliente.this);
+				}
 			}
-
 		});
 		loguearte.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				vl.setVisible(true);
-				vl.setLocationRelativeTo(VentanaCliente.this);
+				if (loguearte.isEnabled()) {
+					vl.setVisible(true);
+					vl.setLocationRelativeTo(VentanaCliente.this);
+				}
 			}
-
 		});
 
 		this.setVisible(true);
 
 	}
+
+	public void cambiosComponentesAlConectarse() {
+		b.setEnabled(true);
+		desconectarse.setEnabled(true);
+		
+		
+	}
+
+	public void cambiosComponentesAlDesconectarse() {
+		b.setEnabled(false);
+		loguearte.setEnabled(true);
+		registrarse.setEnabled(true);
+		desconectarse.setEnabled(false);
+		registrarse.setForeground(Color.BLUE);
+		loguearte.setForeground(Color.BLUE);
+	}
+	
 
 	public JTextArea getTa() {
 		return ta;

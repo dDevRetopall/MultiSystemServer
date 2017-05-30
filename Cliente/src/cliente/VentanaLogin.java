@@ -1,11 +1,14 @@
 package cliente;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -28,6 +31,7 @@ import comun.PeticionDeLogin;
 import comun.Profile;
 
 public class VentanaLogin extends JFrame {
+	String usuario = "someone";
 	JPanel p = new JPanel(new GridLayout(3, 1));
 	JPanel p1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	JPanel p2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -47,9 +51,7 @@ public class VentanaLogin extends JFrame {
 
 	public VentanaLogin(VentanaCliente vc) {
 
-
 		this.vc = vc;
-	
 
 		this.setSize(300, 200);
 		this.setResizable(false);
@@ -69,23 +71,35 @@ public class VentanaLogin extends JFrame {
 		p.add(p1);
 		p.add(p2);
 		p.add(p3);
+		this.addWindowListener(new WindowAdapter() {
 
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Se esta cerrando la ventana");
+				username.setText("");
+				password.setText("");
+				
+
+			}
+
+		});
+		
 		b.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					s = new Socket(Constantes.HOST, Constantes.PORT);
-					
-					 try {
-						 is = s.getInputStream();
-						 ois = new ObjectInputStream(is);
-						 os = s.getOutputStream();
-						 oos = new ObjectOutputStream(os);
-						 } catch (IOException e1) {
-						 // TODO Auto-generated catch block
-						 e1.printStackTrace();
-						 }
+
+					try {
+						is = s.getInputStream();
+						ois = new ObjectInputStream(is);
+						os = s.getOutputStream();
+						oos = new ObjectOutputStream(os);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				} catch (UnknownHostException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -100,22 +114,21 @@ public class VentanaLogin extends JFrame {
 					passwordString = passwordString + chars[i];
 				}
 				if (!passwordString.isEmpty() && !username.getText().isEmpty()) {
+					usuario = username.getText();
 					enviarLoginAlServidor(new PeticionDeLogin(username.getText(), passwordString));
 				}
 
 				username.setText("");
 				password.setText("");
-				
+
 			}
-		
 
 		});
 
 		this.setContentPane(p);
 
-		
-
 	}
+	
 
 	public void enviarLoginAlServidor(PeticionDeLogin p) {
 		Thread t = new Thread(new Runnable() {
@@ -129,6 +142,12 @@ public class VentanaLogin extends JFrame {
 						if (o instanceof Comandos) {
 							Comandos c = (Comandos) o;
 							if (c.habilitarBotonConexion) {
+								vc.registrarse.setForeground(Color.BLACK);
+								vc.loguearte.setForeground(Color.BLACK);
+								vc.loguearte.setEnabled(false);
+								vc.registrarse.setEnabled(false);
+								
+								vc.te2.setText(usuario);
 								vc.b2.setEnabled(true);
 								if (c.enseñarOptionPane) {
 									JOptionPane.showMessageDialog(vc, "Se ha iniciado sesion correctamente");
