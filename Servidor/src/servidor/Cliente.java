@@ -105,6 +105,7 @@ public class Cliente {
 									}
 								}
 								System.out.println("ESTA EN LISTA NEGRA? "+estaEnListaNegra);
+								
 								if(!estaEnListaNegra){
 								
 								System.out.println("NOMBRE USUARIOS RECIBIDO "+ u.getUsername());

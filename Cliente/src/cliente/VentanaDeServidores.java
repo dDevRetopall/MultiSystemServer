@@ -2,7 +2,9 @@ package cliente;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,13 +31,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 import comun.Constantes;
 
 public class VentanaDeServidores extends JFrame {
 	Loading load;
 	ArrayList<String> passwords = new ArrayList<>();
-	JPanel pPrincipal = new JPanel(new BorderLayout());
+	JPanelBackground pPrincipal = new JPanelBackground(new BorderLayout());
 	JPanel central = new JPanel();
 	JPanel otros = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	JPanel north = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -60,6 +63,7 @@ public class VentanaDeServidores extends JFrame {
 	private Connection con;
 
 	public VentanaDeServidores(Connection con) {
+		pPrincipal.setBackground("fondo.jpg");
 		this.con = con;
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(900, 600);
@@ -86,11 +90,28 @@ public class VentanaDeServidores extends JFrame {
 
 		north.add(update);
 		north.add(cargando);
-
+		pPrincipal.setOpaque(false);
+		tabla.setBackground(Color.black);
+		tabla.setForeground(Color.white);
+		tabla.getTableHeader().setBackground(Color.BLACK);
+		tabla.setOpaque(false);
+		north.setOpaque(false);
+		central.setOpaque(false);
+		
 		pPrincipal.add(central, BorderLayout.CENTER);
 		pPrincipal.add(otros, BorderLayout.SOUTH);
 		pPrincipal.add(north, BorderLayout.NORTH);
-
+		tabla.setDragEnabled(false);
+		tabla.setCellSelectionEnabled(false);
+		tabla.getTableHeader().setReorderingAllowed(false);
+       tabla.setBackground(Color.black);
+       scrollpane.getViewport().setBackground(Color.black);
+       tabla. setFillsViewportHeight( true );
+       scrollpane.setViewportView(tabla);
+       //tabla.setPtabla.setFillsViewportHeight(true);referredScrollableViewportSize(tabla.getPreferredSize());
+       
+       
+       //tabla.setPreferredScrollableViewportSize(table.getPreferredSize());
 		Bcon.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -140,6 +161,7 @@ public class VentanaDeServidores extends JFrame {
 						}
 
 					}
+					
 					// -----------------FASE DE PRUEBAS-----------------\\
 					// Hacer que se pueda hacer un servidor fantasma (Que nos se
 					// vea en la lista)->Y le puedas poner un nombre especial

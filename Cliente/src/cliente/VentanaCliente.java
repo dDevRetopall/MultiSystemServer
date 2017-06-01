@@ -194,7 +194,7 @@ public class VentanaCliente extends JFrame {
 						Constantes.HOST = te3.getText();
 						v.getTa().setText("Usuarios" + "\n");
 						// Puerto.loadList();
-
+						ta.setText("");
 						c = new Cliente(te2.getText(), VentanaCliente.this);
 						c.enviarMensajeAlServidor(new Usuario(te2.getText()));
 						c.enviarMensajeDeConexionAlServidor(new Mensaje(te2.getText(), true));
