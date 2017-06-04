@@ -35,7 +35,7 @@ public class JPanelBackground extends JPanel {
 		
 		// Construimos la imagen y se la asignamos al atributo background.
 		this.setOpaque(false);
-		this.background = new ImageIcon(imagePath).getImage();
+		this.background = new ImageIcon(getClass().getResource(imagePath)).getImage();
 		repaint();
 	}
  

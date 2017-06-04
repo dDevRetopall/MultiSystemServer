@@ -99,7 +99,7 @@ public class VentanaCliente extends JFrame {
 		p1.add(scroll2);
 
 		p1.add(b);
-		ImageIcon ii = new ImageIcon("descarga.png");
+		ImageIcon ii = new ImageIcon(getClass().getResource("descarga.png"));
 
 		p1.add(agrandarArea);
 		agrandarArea.setIcon(ii);

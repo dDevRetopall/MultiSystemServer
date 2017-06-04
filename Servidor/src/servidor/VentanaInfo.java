@@ -2,6 +2,7 @@ package servidor;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -19,6 +20,8 @@ public class VentanaInfo extends JFrame {
 	JLabel info3 = new JLabel("", SwingConstants.CENTER);
 	JLabel info4 = new JLabel("", SwingConstants.CENTER);
 	JLabel info5 = new JLabel("", SwingConstants.CENTER);
+	JLabel info6 = new JLabel("", SwingConstants.CENTER);
+	JLabel info7 = new JLabel("", SwingConstants.CENTER);
 	JPanel p = new JPanel(new GridLayout(8,0));
 	public VentanaInfo() {
 		this.setSize(300, 200);
@@ -34,6 +37,8 @@ public class VentanaInfo extends JFrame {
 		p.add(info3);
 		p.add(info4);
 		p.add(info5);
+		p.add(info6);
+		p.add(info7);
 		
 		this.setContentPane(p);
 
@@ -48,12 +53,13 @@ public class VentanaInfo extends JFrame {
 			e.printStackTrace();
 		}
 
-		info.setText("Version: " + ConstantesServer.version);
+		info.setText("Program Version: " + ConstantesServer.version);
 		info2.setText("Ip: " + localHost.getHostAddress());
 		info3.setText("Port: " + Constantes.PORT);
 		info4.setText(ConstantesServer.content);
 		info5.setText("Made all with Java.");
-
+		info6.setText("Operative System : "+System.getProperties().getProperty("os.name"));
+		info7.setText("Java version : "+System.getProperties().getProperty("java.version"));
 	}
 
 	public void changeVersion(String version) {

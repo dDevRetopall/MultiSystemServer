@@ -14,6 +14,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import comun.Constantes;
 import comun.Mensaje;
+import gui.ProgressBarCopyDemo;
+import gui.UI;
 
 public class MainCliente {
 	static VentanaDeServidores vs;
@@ -35,10 +37,21 @@ public class MainCliente {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
+	//	UI u = new UI();
+//		ProgressBarCopyDemo d = new ProgressBarCopyDemo();
+//		
+//		d.copyThread.update("Attemping to connect", 1, 2);
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		u.update("Attemting to connect");
 		Connection con=ConnectionSQLDangerous.getConnection();
 		ArrayList<String>data=ConnectionSQLDangerous.getDataOfServers(con);
+//		u.update("Connected");
+//		d.copyThread.update("Connected", 2, 2);
 		vs = new VentanaDeServidores(con);
 		vs.rellenar(data);
 		vs.setVisible(true);

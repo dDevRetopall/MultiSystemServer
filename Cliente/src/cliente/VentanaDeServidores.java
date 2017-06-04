@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -21,6 +23,7 @@ import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,8 +33,11 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+
+import org.eclipse.swt.SWT;
 
 import comun.Constantes;
 
@@ -51,7 +57,10 @@ public class VentanaDeServidores extends JFrame {
 	JLabel l2 = new JLabel("Password");
 	JLabel l3 = new JLabel("Puerto");
 	JButton update = new JButton("Actualizar");
+	JPanel generalNorth = new JPanel(new BorderLayout());
+	JCheckBox box = new JCheckBox("View header", false);
 	DefaultTableModel modelo = new DefaultTableModel();
+	JLabel system = new JLabel("System");
 	JTable tabla = new JTable(modelo) {
 		public boolean isCellEditable(int rowIndex, int colIndex) {
 
@@ -63,7 +72,7 @@ public class VentanaDeServidores extends JFrame {
 	private Connection con;
 
 	public VentanaDeServidores(Connection con) {
-		pPrincipal.setBackground("fondo.jpg");
+		pPrincipal.setBackground(("fondo.jpg"));
 		this.con = con;
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(900, 600);
@@ -90,28 +99,53 @@ public class VentanaDeServidores extends JFrame {
 
 		north.add(update);
 		north.add(cargando);
-		pPrincipal.setOpaque(false);
+
+		generalNorth.add(box, BorderLayout.WEST);
+		generalNorth.add(north, BorderLayout.CENTER);
+		generalNorth.setOpaque(false);
+
 		tabla.setBackground(Color.black);
+		box.setForeground(Color.WHITE);
+
 		tabla.setForeground(Color.white);
 		tabla.getTableHeader().setBackground(Color.BLACK);
+
+		pPrincipal.setOpaque(false);
 		tabla.setOpaque(false);
 		north.setOpaque(false);
 		central.setOpaque(false);
-		
+		box.setOpaque(false);
+
 		pPrincipal.add(central, BorderLayout.CENTER);
 		pPrincipal.add(otros, BorderLayout.SOUTH);
-		pPrincipal.add(north, BorderLayout.NORTH);
+
+		pPrincipal.add(generalNorth, BorderLayout.NORTH);
+		tabla.getTableHeader().setOpaque(false);
+	
 		tabla.setDragEnabled(false);
 		tabla.setCellSelectionEnabled(false);
 		tabla.getTableHeader().setReorderingAllowed(false);
-       tabla.setBackground(Color.black);
-       scrollpane.getViewport().setBackground(Color.black);
-       tabla. setFillsViewportHeight( true );
-       scrollpane.setViewportView(tabla);
-       //tabla.setPtabla.setFillsViewportHeight(true);referredScrollableViewportSize(tabla.getPreferredSize());
-       
-       
-       //tabla.setPreferredScrollableViewportSize(table.getPreferredSize());
+		tabla.setBackground(Color.black);
+		scrollpane.getViewport().setBackground(Color.black);
+		tabla.setFillsViewportHeight(true);
+		scrollpane.setViewportView(tabla);
+		// tabla.setPtabla.setFillsViewportHeight(true);referredScrollableViewportSize(tabla.getPreferredSize());
+
+		// tabla.setPreferredScrollableViewportSize(table.getPreferredSize());
+		box.addItemListener(new ItemListener() {
+
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange()==ItemEvent.SELECTED){
+					tabla.getTableHeader().setOpaque(true);
+					tabla.updateUI();
+				}else{
+					tabla.getTableHeader().setOpaque(false);
+					tabla.updateUI();
+				}
+
+			}
+		});
 		Bcon.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -161,7 +195,7 @@ public class VentanaDeServidores extends JFrame {
 						}
 
 					}
-					
+
 					// -----------------FASE DE PRUEBAS-----------------\\
 					// Hacer que se pueda hacer un servidor fantasma (Que nos se
 					// vea en la lista)->Y le puedas poner un nombre especial
@@ -172,9 +206,9 @@ public class VentanaDeServidores extends JFrame {
 						@Override
 						public void run() {
 
-							ImageIcon loading = new ImageIcon("loading.gif");
+							ImageIcon loading = new ImageIcon(getClass().getResource("loading.gif"));
 							load = new Loading("Trying to connect", loading, "Connecting");
-							
+
 							load.addWindowListener(new WindowAdapter() {
 
 								public void windowOpened(WindowEvent e) {
@@ -187,11 +221,10 @@ public class VentanaDeServidores extends JFrame {
 										Constantes.PORT = Integer.parseInt(tf2.getText());
 										VentanaCliente vc = new VentanaCliente("Unknown Server");
 										vc.te3.setEditable(false);
-										
+
 									} catch (UnknownHostException e1) {
 										System.out.println("ERROR while trying to connect to the server");
 										load.setVisible(false);
-									
 
 										JOptionPane.showMessageDialog(VentanaDeServidores.this,
 												"Error while trying to connect to the Server");
