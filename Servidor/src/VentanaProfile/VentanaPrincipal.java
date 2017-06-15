@@ -85,12 +85,12 @@ public class VentanaPrincipal extends JFrame {
 				for(int i =0;i<descompuesto.length;i++){
 					pass=pass+descompuesto[i];
 				}
-				boolean resultado=ConnectionSQL.hacerConsulta(username.getText(), pass);
-				if(resultado){
-					System.out.println("COntraseña aceptada");
-				}else{
-				System.out.println("COntraseña erronea");
-				}
+				//boolean resultado=ConnectionSQL.hacerConsulta(username.getText(), pass);
+//				if(resultado){
+//					System.out.println("COntraseña aceptada");
+//				}else{
+//				System.out.println("COntraseña erronea");
+//				}
 			}
 		});
 	}

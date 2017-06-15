@@ -11,24 +11,34 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import comun.Profile;
+import utils.ConnectionSQLUsuarios;
+import utils.ConstantesServer;
 import utils.EncriptarPasswords;
 
 public class GestionUsuarios {
 	private static ArrayList<String> profiles = new ArrayList<>();
 	static String nombreArchivo="profiles.info";
-	public static void register(String username, String password) {
+	public static boolean register(String username, String password) {
+		//USANDO DATOS LOCALES (LIGADO A LO DE SINCRONIZACION
 		for (int i = 0; i < profiles.size(); i += 2) {
 			if (username.equals(profiles.get(i))) {
 				System.err.println("No se ha podido registrar");
-				return;
+				return false;
 			} else {
 
 			}
 		}
-		System.out.println("Se ha conseguido registrarte");
+		
 		String passwordEncriptada=EncriptarPasswords.encriptarPassword(password);
-		ConnectionSQL.addProfile(username, passwordEncriptada);
+		boolean usuariocreado=ConnectionSQLUsuarios.añadirUsuario(ConstantesServer.tablaUsuariosPredeterminada, username, password, "Free");
+		if(usuariocreado){
+		System.out.println("Se ha conseguido registrarte");
 		saveProfile(new Profile(username, passwordEncriptada));
+		return true;
+		}else{
+			System.err.println("No se ha podido crear una registro nuevo");
+			return false;
+		}
 	}
 
 	public static void login(String username, String password) {

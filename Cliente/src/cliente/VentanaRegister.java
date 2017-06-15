@@ -1,5 +1,6 @@
 package cliente;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -7,14 +8,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -22,6 +27,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
+import comun.Comandos;
 import comun.Constantes;
 import comun.Profile;
 
@@ -35,8 +41,10 @@ public class VentanaRegister extends JFrame{
 	JLabel usernameLb = new JLabel("Username: ");
 	JLabel passwordLb = new JLabel("Password: ");
 	JButton b = new JButton("Registrar!");
-
-	
+	InputStream is;
+	ObjectInputStream ois;
+	boolean connected = true;
+	Socket s;
 	public VentanaRegister(VentanaCliente vc) {
 	
 		
@@ -82,15 +90,58 @@ public class VentanaRegister extends JFrame{
 		});
 		
 		this.setContentPane(p);
-	
+		try {
+			s = new Socket(Constantes.HOST,Constantes.PORT);
+			is = s.getInputStream();
+			ois = new ObjectInputStream(is);;
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		Thread t = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (connected) {
+					try {
+						System.out.println("Se ha detectado algo");
+						Object o = ois.readObject();
+						if (o instanceof Comandos) {
+						Comandos c = (Comandos) o;
+						if (c.enseñarOptionPane) {
+									JOptionPane.showMessageDialog(vc, c.mensaje);
+									connected = false;
+									s.close();
+								}
+							
+
+							}
+						}
+					 catch (ClassNotFoundException e) {
+						connected = false;
+						e.printStackTrace();
+					} catch (IOException e) {
+						connected = false;
+						e.printStackTrace();
+					}
+
+				}
+
+			}
+		});
+		t.start();
 		
 		
 		
 	}
-	public void enviarProfileAlServidor(Profile p){
-		Socket s;
+	public void enviarProfileAlServidor(Profile p) {
+	
 		try {
-			s = new Socket(Constantes.HOST,Constantes.PORT);
+			
 			OutputStream os = s.getOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(os);
 			oos.writeObject(p);

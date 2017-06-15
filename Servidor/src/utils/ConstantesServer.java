@@ -12,5 +12,6 @@ public class ConstantesServer {
 	public static String nameSecurity="advanced security";
 	public static String version="1.2.7";
 	public static String content="Diego Berrocal. All rights reserved.";
+	public static String tablaUsuariosPredeterminada="login";
 	
 }

@@ -52,6 +52,7 @@ import comun.Constantes;
 import comun.Mensaje;
 import comun.Profile;
 import comun.Usuarios;
+import utils.ConnectionSQLUsuarios;
 import utils.ConstantesServer;
 import utils.FileUtils;
 
@@ -136,7 +137,9 @@ public class MainServidor {
 			});
 
 			// Se conecta a la base de datos
-			con = ConnectionSQL.getConnection();
+			ConnectionSQLUsuarios.escribirMensajesEnConsola=true;
+			con = ConnectionSQLUsuarios.connect();
+			
 
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -354,6 +357,7 @@ public class MainServidor {
 	}
 	public static void escribirEnServidorMensajeCustom(String mensaje){
 		if (ConstantesServer.advanced) {
+			
 			vs.getTa().setText(vs.getTa().getText()  + mensaje + "\n");
 			vs.scroll.getVerticalScrollBar().setValue(vs.scroll.getVerticalScrollBar().getMaximum());
 		}
@@ -506,11 +510,14 @@ public class MainServidor {
 		// Se intenta crear una tabla si esta no existe
 		// Si no existe se intenta rellenar con los datos de las cuentas locales
 		// guardadas en el archivo de cuentas(profiles.info)
-		ConnectionSQL.createTable(con);
+		ConnectionSQLUsuarios.crearTablaUsuarios(ConstantesServer.tablaUsuariosPredeterminada, null);
 
 		// Se mira si existe la base de datos
-		boolean existe = ConnectionSQL.existeTablaLogin(con);
+		boolean existe = ConnectionSQLUsuarios.existeTabla(ConstantesServer.tablaUsuariosPredeterminada);
 
+		
+		
+	/*SINCRONIZACION*/
 		if (existe) {
 
 			// Si existe se sincroniza la informacion de la base de datos con el
@@ -532,6 +539,9 @@ public class MainServidor {
 			System.out.println("MySQL->Datos sincronizados");
 			escribirEnServidorMensajeDeMySQL("Datos sincronizados");
 		}
+		
+		/*SINCRONIZACION*/
+		
 		// ConnectionSQL.close(con);
 	}
 

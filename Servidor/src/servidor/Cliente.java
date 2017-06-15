@@ -20,6 +20,8 @@ import comun.PeticionDeLogin;
 import comun.Profile;
 import comun.Usuario;
 import comun.Usuarios;
+import utils.ConnectionSQLUsuarios;
+import utils.ConstantesServer;
 
 
 public class Cliente {
@@ -69,8 +71,22 @@ public class Cliente {
 						}else if(o instanceof Profile){
 							System.out.println("Ha llegado una nueva peticion de registro!!!");
 							Profile p =(Profile)o;
-							GestionUsuarios.register(p.getUsername(), p.getPassword());
+							System.out.println("Intentando crear registro nuevo");
+							boolean creadoUsuario=GestionUsuarios.register(p.getUsername(), p.getPassword());
+							if(creadoUsuario){
 							System.out.println("Se ha creado un registro nuevo");
+							
+								enviarMensaje(new Comandos(true,"Se ha creado un registro nuevo"));
+							}
+							else{
+								enviarMensaje(new Comandos(true,"Ha habido algun fallo al intentar registrarse"));
+							}
+//							try {
+//								Thread.sleep(1000);
+//							} catch (InterruptedException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
 							System.out.println("Cerrando entrada...");
 							connected=false;
 							s.close();
@@ -78,7 +94,7 @@ public class Cliente {
 							System.out.println("Detectada una peticion de login");
 							PeticionDeLogin l = (PeticionDeLogin) o;
 							System.out.println("Consulta aceptada");
-							boolean resultado=ConnectionSQL.hacerConsulta(l.getUsername(), l.getPassword());
+							boolean resultado=ConnectionSQLUsuarios.consultarUsuario(ConstantesServer.tablaUsuariosPredeterminada,l.getUsername(), l.getPassword());
 							if(resultado){
 								enviarMensaje(new Comandos(true,true));
 							}else{
