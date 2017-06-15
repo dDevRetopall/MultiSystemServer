@@ -50,5 +50,6 @@ public class ConnectionSQL {
 	}
 	public static void crearTabla(String nombreTabla,String[]tipoTabla){
 		
+		
 	}
 }
