@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 
 import servidor.GestionUsuarios;
 import servidor.MainServidor;
@@ -41,6 +42,9 @@ public class ConnectionSQLUsuarios {
 
 		} catch (SQLException e) {
 			escribirMensaje("No se ha podido conectar a la base de datos");
+			System.err.println("Error al intentar conectarse a la base de datos");
+			JOptionPane.showMessageDialog(null,"Error al intentar establecer conexion a la base de datos. Revisa tu conexion");
+			System.exit(0);
 			e.printStackTrace();
 		}
 		return con;
@@ -94,8 +98,6 @@ public class ConnectionSQLUsuarios {
 				pwd = rs.getString(3);
 				datos.add(pwd);
 				posicion++;
-				rango = rs.getString(4);
-				datos.add(rango);
 				posicion++;
 			}
 			escribirMensaje("Datos cogidos correctamente.");

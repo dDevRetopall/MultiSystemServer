@@ -40,7 +40,9 @@ public class ConnectionSQL {
 				
 				MainServidor.escribirEnServidorMensajeDeMySQL("Tratando de conectar");
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Error al intentar conectar");
+				JOptionPane.showMessageDialog(null,"Error al intentar establecer conexion a la base de datos. Revisa tu conexion");
+				System.exit(0);
 				e.printStackTrace();
 			}
 

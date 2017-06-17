@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -119,11 +121,10 @@ public class VentanaServidor extends JFrame {
 			}
 
 		});
-		b2.addMouseListener(new MouseAdapter() {
+		b2.addActionListener(new ActionListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
+			public void actionPerformed(ActionEvent e) {
 				int respuesta = JOptionPane.showConfirmDialog(MainServidor.vs, "Seguro que quieres borrar la DATA",
 						"Advertencia", JOptionPane.YES_NO_OPTION);
 				if (respuesta == JOptionPane.YES_OPTION) {
@@ -135,11 +136,10 @@ public class VentanaServidor extends JFrame {
 			}
 
 		});
-		cambiarpwd.addMouseListener(new MouseAdapter() {
+		cambiarpwd.addActionListener(new ActionListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
+			public void actionPerformed(ActionEvent e) {
 				if (!pwd.getText().isEmpty()) {
 					JPanel panel = new JPanel();
 					JLabel label = new JLabel("Enter a password:");
@@ -180,39 +180,37 @@ public class VentanaServidor extends JFrame {
 			}
 
 		});
-		ban.addMouseListener(new MouseAdapter() {
+		ban.addActionListener(new ActionListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
+			public void actionPerformed(ActionEvent e) {
 				MainServidor.buscarSocketYBanear(username.getText());
 			}
 
 		});
-		unban.addMouseListener(new MouseAdapter() {
+		unban.addActionListener(new ActionListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
+			public void actionPerformed(ActionEvent e) {
 				String ip = JOptionPane.showInputDialog(new JTextField(), "Escriba la ip que deseas desbanear");
+				if(ip!=null|| !ip.equals("")){
 				MainServidor.buscarSocketYDesBanear(ip);
+				}
 			}
 
 		});
-		b.addMouseListener(new MouseAdapter() {
+		b.addActionListener(new ActionListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
+			public void actionPerformed(ActionEvent e) {
 				MainServidor.enviarMensajeATodos(new Mensaje(te.getText()), true);
 			}
 
 		});
-		bKick.addMouseListener(new MouseAdapter() {
+		bKick.addActionListener(new ActionListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
+			public void actionPerformed(ActionEvent e) {
 				MainServidor.buscarSocket(username.getText());
 			}
 
@@ -221,7 +219,22 @@ public class VentanaServidor extends JFrame {
 		this.setVisible(true);
 
 	}
-
+	public void habilitarBotones(){
+		b2.setEnabled(true);
+		ban.setEnabled(true);
+		unban.setEnabled(true);
+		cambiarpwd.setEnabled(true);
+		bKick.setEnabled(true);
+		b.setEnabled(true);
+	}
+	public void deshabilitarBotones(){
+		b2.setEnabled(false);
+		ban.setEnabled(false);
+		unban.setEnabled(false);
+		cambiarpwd.setEnabled(false);
+		bKick.setEnabled(false);
+		b.setEnabled(false);
+	}
 	public JTextArea getTa() {
 		return ta;
 	}

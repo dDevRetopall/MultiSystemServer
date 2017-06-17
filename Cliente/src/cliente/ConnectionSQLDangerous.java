@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 
 
 public class ConnectionSQLDangerous {
@@ -26,7 +28,8 @@ public class ConnectionSQLDangerous {
 				System.out.println("MySQL->Tratando de conectar");
 				
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Error al intentar conectar");
+				JOptionPane.showMessageDialog(null,"Error al intentar establecer conexion a la base de datos. Revisa tu conexion");
 				e.printStackTrace();
 			}
 

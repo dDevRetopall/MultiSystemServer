@@ -102,7 +102,7 @@ public class MainServidor {
 
 			// Abro una ventana del Servidor
 			vs = new VentanaServidor();
-
+			vs.deshabilitarBotones();
 			// Leo los settings del archivo inicial
 			FileUtils.readSettings();
 			System.out.println("Advanced mode is " + ConstantesServer.advanced);
@@ -178,6 +178,7 @@ public class MainServidor {
 			} else {
 				System.out.println("Contraseña aprobada");
 				escribirEnServidorMensajeDeMySQL("Contraseña aprobada");
+				vs.habilitarBotones();
 			}
 
 		} else {
@@ -444,10 +445,15 @@ public class MainServidor {
 		int c2 = 0;
 
 		System.out.println(ip);
-		ListaNegra.ipaddress.remove(ip);
-		System.out.println("Se ha desbaneado a " + ip);
-		enviarMensajeATodos(new Mensaje(ip + " has been unbanned"), false);
-		ListaNegra.saveList();
+		if(ListaNegra.ipaddress.contains(ip)){
+			ListaNegra.ipaddress.remove(ip);
+			System.out.println("Se ha desbaneado a " + ip);
+			enviarMensajeATodos(new Mensaje(ip + " has been unbanned"), false);
+			ListaNegra.saveList();
+		}else{
+			System.out.println("No se ha podido desbanear a ese usuario porque no existe");
+		}
+		
 
 	}
 
@@ -515,7 +521,7 @@ public class MainServidor {
 		// Se mira si existe la base de datos
 		boolean existe = ConnectionSQLUsuarios.existeTabla(ConstantesServer.tablaUsuariosPredeterminada);
 
-		
+		System.out.println(existe);
 		
 	/*SINCRONIZACION*/
 		if (existe) {
@@ -526,7 +532,7 @@ public class MainServidor {
 			// en la base de datos
 			// Luego se limpia el archivo y se va almacenando la informacion
 			// (saverProfile())
-			ArrayList<String> datos = ConnectionSQL.getUsuariosDeMySQL(con);
+			ArrayList<String> datos = ConnectionSQLUsuarios.getUsuariosDeMySQL(con,ConstantesServer.tablaUsuariosPredeterminada);
 			GestionUsuarios.clear();
 			for (int i = 0; i < (datos.size()); i += 2) {
 

@@ -30,7 +30,7 @@ public class GestionUsuarios {
 		}
 		
 		String passwordEncriptada=EncriptarPasswords.encriptarPassword(password);
-		boolean usuariocreado=ConnectionSQLUsuarios.añadirUsuario(ConstantesServer.tablaUsuariosPredeterminada, username, password, "Free");
+		boolean usuariocreado=ConnectionSQLUsuarios.añadirUsuario(ConstantesServer.tablaUsuariosPredeterminada, username, passwordEncriptada, "Free");
 		if(usuariocreado){
 		System.out.println("Se ha conseguido registrarte");
 		saveProfile(new Profile(username, passwordEncriptada));

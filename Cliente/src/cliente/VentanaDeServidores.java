@@ -96,12 +96,13 @@ public class VentanaDeServidores extends JFrame {
 		otros.add(l2);
 		otros.add(pw);
 		otros.add(Bcon);
-
-		north.add(update);
+		
 		north.add(cargando);
+		north.add(update);
+		
 
 		generalNorth.add(box, BorderLayout.WEST);
-		generalNorth.add(north, BorderLayout.CENTER);
+		generalNorth.add(north, BorderLayout.EAST);
 		generalNorth.setOpaque(false);
 
 		tabla.setBackground(Color.black);
