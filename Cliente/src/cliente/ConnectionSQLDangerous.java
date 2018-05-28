@@ -17,9 +17,10 @@ public class ConnectionSQLDangerous {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://minecraft236.omgserv.com:3306/minecraft_107543";
-			String usuario = "minecraft_107543";
-			String password = "pinkifamo";
+			String url = "jdbc:mysql://localhost/serversystem";
+			String usuario = "root";
+			String password = "";
+
 		
 			
 			try {

@@ -14,8 +14,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import comun.Constantes;
 import comun.Mensaje;
-import gui.ProgressBarCopyDemo;
-import gui.UI;
 
 public class MainCliente {
 	static VentanaDeServidores vs;

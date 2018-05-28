@@ -27,9 +27,9 @@ public class ConnectionSQL {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://minecraft236.omgserv.com:3306/minecraft_107543";
-			String usuario = "minecraft_107543";
-			String password = "pinkifamo";
+			String url = "jdbc:mysql://localhost/serversystem";
+			String usuario = "root";
+			String password = "";
 			System.out.println("MySQL->Leyendo datos");
 			
 			MainServidor.escribirEnServidorMensajeDeMySQL("Leyendo datos");
@@ -40,10 +40,12 @@ public class ConnectionSQL {
 				
 				MainServidor.escribirEnServidorMensajeDeMySQL("Tratando de conectar");
 			} catch (SQLException e) {
+		
 				System.err.println("Error al intentar conectar");
 				JOptionPane.showMessageDialog(null,"Error al intentar establecer conexion a la base de datos. Revisa tu conexion");
 				System.exit(0);
 				e.printStackTrace();
+				
 			}
 
 		} catch (ClassNotFoundException e) {

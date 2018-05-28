@@ -25,9 +25,9 @@ public class ConnectionSQLUsuarios {
 		con = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			url = "jdbc:mysql://minecraft236.omgserv.com:3306/minecraft_107543";
-			usuario = "minecraft_107543";
-			password = "pinkifamo";
+			 url = "jdbc:mysql://localhost/serversystem";
+			 usuario = "root";
+			 password = "";
 
 			escribirMensaje("Leyendo datos");
 

@@ -37,7 +37,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.eclipse.swt.SWT;
 
 import comun.Constantes;
 

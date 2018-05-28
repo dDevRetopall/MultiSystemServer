@@ -193,7 +193,7 @@ public class VentanaServidor extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String ip = JOptionPane.showInputDialog(new JTextField(), "Escriba la ip que deseas desbanear");
-				if(ip!=null|| !ip.equals("")){
+				if(ip!=null&& !ip.equals("")){
 				MainServidor.buscarSocketYDesBanear(ip);
 				}
 			}
